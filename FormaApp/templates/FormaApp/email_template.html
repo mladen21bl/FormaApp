@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="UTF-8">
+    <title>Prijava dodatka prehrani</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.5; color: #333; }
+        h2 { color: #2a7ae2; border-bottom: 1px solid #ccc; padding-bottom: 5px; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .section { margin-bottom: 25px; }
+    </style>
+</head>
+<body>
+    <h1>Prijava dodatka prehrani</h1>
+
+    <div class="section">
+        <h2>Osnovni podaci</h2>
+        <p><strong>Ime i prezime:</strong> {{ ime }} {{ prezime }}</p>
+        <p><strong>Broj indeksa:</strong> {{ broj_indeksa }}</p>
+        <p><strong>Naziv proizvoda:</strong> {{ naziv }}</p>
+        <p><strong>Oblik proizvoda:</strong> {{ oblik }}</p>
+        <p><strong>Neto količina:</strong> {{ neto_kolicina }} {{ jedinica_kolicina }}</p>
+        <p><strong>Tip ambalaže:</strong> {{ tip_ambalaze }} / <strong>Materijal:</strong> {{ materijal_ambalaze }}</p>
+        <p><strong>Čuvati zaštićeno od svjetlosti:</strong> {{ cuva_od_svjetlosti }}</p>
+        <p><strong>Čuvati zaštićeno od vlage:</strong> {{ cuva_od_vlage }}</p>
+        <p><strong>Temperatura skladištenja:</strong> {{ temp_min }} - {{ temp_max }} °C</p>
+        <p><strong>Serija / Rok trajanja:</strong> {{ serija }} / {{ rok_trajanja }}</p>
+        <p><strong>Proizvođač / Uvoznik / Distributer:</strong> {{ proizvodjac }} / {{ uvoznik }} / {{ distributer }}</p>
+        <p><strong>Zemlja porijekla:</strong> {{ zemlja_porijekla }}</p>
+    </div>
+
+    {% if sastojci %}
+    <div class="section">
+        <h2>Sastojci</h2>
+        <table>
+            <tr>
+                <th>Naziv</th>
+                <th>Količina doza</th>
+                <th>% NRV</th>
+                <th>Na 100g</th>
+            </tr>
+            {% for s in sastojci %}
+            <tr>
+                <td>{{ s.naziv }}</td>
+                <td>{{ s.kolicina_doz }}</td>
+                <td>{{ s.percent_nrv }}</td>
+                <td>{{ s.na_100g }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    {% endif %}
+
+    {% if nutrienti %}
+    <div class="section">
+        <h2>Nutritivna vrijednost</h2>
+        <table>
+            <tr>
+                <th>Naziv</th>
+                <th>Količina doza</th>
+                <th>% NRV</th>
+                <th>Na 100g</th>
+            </tr>
+            {% for n in nutrienti %}
+            <tr>
+                <td>{{ n.naziv }}</td>
+                <td>{{ n.kolicina_doz }}</td>
+                <td>{{ n.percent_nrv }}</td>
+                <td>{{ n.na_100g }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    {% endif %}
+
+    {% if biljna_droga %}
+    <div class="section">
+        <h2>Biljna droga</h2>
+        {% for b in biljna_droga %}
+        <p><strong>Naziv (SR / LAT):</strong> {{ b.sr }} / {{ b.lat }}</p>
+        <p><strong>Dio biljke:</strong> {{ b.dio }}</p>
+        <p><strong>Stanje biljke:</strong> {{ b.stanje }}</p>
+        <p><strong>Rastvarac / DER:</strong> {{ b.rastvarac }} / {{ b.der }}</p>
+        <p><strong>Standardizacija:</strong> {{ b.standardizacija_proc }}% {{ b.standardizacija_supstanca }}</p>
+        <p><strong>Zemlja porijekla / Količina / Jedinica:</strong> {{ b.zemlja }} / {{ b.kolicina }} {{ b.jedinica }}</p>
+        <p><strong>Poruka:</strong> {{ b.poruka }}</p>
+        <hr>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if aktivne_supstance %}
+    <div class="section">
+        <h2>Aktivne supstance</h2>
+        <table>
+            <tr>
+                <th>Naziv</th>
+                <th>Hemijski oblik</th>
+                <th>Količina</th>
+                <th>Jedinica</th>
+            </tr>
+            {% for a in aktivne_supstance %}
+            <tr>
+                <td>{{ a.naziv }}</td>
+                <td>{{ a.hemijski_oblik }}</td>
+                <td>{{ a.kolicina }}</td>
+                <td>{{ a.jedinica }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    {% endif %}
+
+    {% if disclaimer %}
+    <div class="section">
+        <h2>Dodatne napomene</h2>
+        <p>{{ disclaimer }}</p>
+    </div>
+    {% endif %}
+
+</body>
+</html>

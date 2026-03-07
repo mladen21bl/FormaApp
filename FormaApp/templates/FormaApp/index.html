@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test prijava</title>
+</head>
+<body>
+
+<h2>Unesite podatke</h2>
+
+<form method="post">
+    {% csrf_token %}
+
+    <label>Ime:</label>
+    {{ form.ime }}
+
+    <br><br>
+
+    <label>Prezime:</label>
+    {{ form.prezime }}
+
+    <br><br>
+
+    <label>Broj indeksa:</label>
+    {{ form.broj_indeksa }}
+
+    <br><br>
+
+    <button type="submit">Pošalji</button>
+
+</form>
+
+</body>
+</html>

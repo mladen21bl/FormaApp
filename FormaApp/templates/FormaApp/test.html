@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+<meta charset="UTF-8">
+<title>Prijava za registraciju dodatka prehrani test 2</title>
+<style>
+body { font-family: Arial, Helvetica, sans-serif; background-color: #f4f6f8; color: #222; margin:0; padding:0; }
+.container { max-width: 1050px; margin: 40px auto; background: #fff; padding: 30px 40px; border: 1px solid #ccc; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);}
+h1 { font-size: 28px; text-align: center; margin-bottom: 5px; }
+.subtitle { text-align: center; font-size: 14px; color: #555; margin-bottom: 30px; }
+fieldset { border: 1px solid #bbb; padding: 20px; margin-bottom: 25px; background-color: #eafcde; border-radius: 6px; }
+legend { font-weight: bold; padding: 0 10px; color: #050505; font-size: 20px; }
+label { font-weight: normal; }
+p { margin-bottom: 12px; }
+input[type="text"], input[type="number"], input[type="date"], select, textarea { width: 220px; padding: 6px 10px; margin-top: 3px; margin-bottom: 6px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px; }
+textarea { width: 100%; }
+input:focus, select:focus { border-color: #003366; outline: none; box-shadow: 0 0 5px rgba(0,51,102,0.2); }
+input.invalid, select.invalid { border-color: red; background-color: #ffe6e6; }
+.help-text { font-size: 12px; color: #555; margin-top: 3px; }
+.hidden { display: none; }
+button { background-color: #003366; color: #fff; border: none; padding: 10px 25px; font-size: 14px; cursor: pointer; border-radius: 4px; }
+button:hover { background-color: #002244; }
+hr { border: none; border-top: 1px dashed #ccc; margin: 15px 0; }
+.checkbox-group { margin-left: 15px; font-size: 13px; font-weight: normal; }
+.flex-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; flex-wrap: wrap; }
+.add-btn { background-color: #006600; margin-top: 10px; }
+.add-btn:hover { background-color: #004400; }
+.card { border: 1px solid #aaa; padding: 15px; margin-bottom: 15px; border-radius: 6px; background-color: #f0fff0; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
+.card hr { border: none; border-top: 1px dashed #ccc; margin: 10px 0; }
+.checkbox-group.invalid { border: 1px solid red; padding: 10px; border-radius: 4px; background-color: #ffe6e6; }
+input.warning { border-color: orange; background-color: #fff4cc; }
+.message { font-size: 12px; margin-top: 4px; }
+.message.warning { color: #cc8400; }
+.message.error { color: red; }
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Prijava za registraciju dodatka prehrani test 2</h1>
+<div class="subtitle">Simulacija postupka prijave – nastava iz farmakognozije</div>
+
+<!-- PODACI STUDENTA -->
+<fieldset>
+<legend>Podaci studenta</legend>
+<p>Ime: <input type="text" name="ime_studenta" value="{{ ime|default:'' }}" readonly></p>
+<p>Prezime: <input type="text" name="prezime_studenta" value="{{ prezime|default:'' }}" readonly></p>
+<p>Broj indeksa: <input type="text" name="broj_indeksa" value="{{ broj_indeksa|default:'' }}" readonly></p>
+</fieldset>
+
+<form id="prijavaForm" method="POST" action="{% url 'test' %}" novalidate>
+{% csrf_token %}
+
+<!-- 1. Osnovni podaci o proizvodu -->
+<fieldset>
+<legend>1. Osnovni podaci o proizvodu</legend>
+<p>Komercijalni naziv proizvoda:<br>
+<input type="text" name="naziv" required value="{{ request.POST.naziv|default_if_none:'' }}" {% if greske.naziv %}class="invalid"{% endif %}></p>
+
+<p>Farmaceutski oblik:<br>
+<select name="oblik" required {% if greske.oblik %}class="invalid"{% endif %}>
+<option value="">Odaberite oblik</option>
+<optgroup label="Čvrsti oblici">
+<option value="tablete" {% if request.POST.oblik == "tablete" %}selected{% endif %}>Tablete</option>
+<option value="kapsule" {% if request.POST.oblik == "kapsule" %}selected{% endif %}>Kapsule</option>
+<option value="prah" {% if request.POST.oblik == "prah" %}selected{% endif %}>Prah</option>
+<option value="granule" {% if request.POST.oblik == "granule" %}selected{% endif %}>Granule</option>
+<option value="pastile" {% if request.POST.oblik == "pastile" %}selected{% endif %}>Pastile</option>
+</optgroup>
+<optgroup label="Polučvrsti oblici">
+<option value="mast" {% if request.POST.oblik == "mast" %}selected{% endif %}>Mast</option>
+<option value="gel" {% if request.POST.oblik == "gel" %}selected{% endif %}>Gel</option>
+<option value="krem" {% if request.POST.oblik == "krem" %}selected{% endif %}>Krem</option>
+</optgroup>
+<optgroup label="Tečni oblici">
+<option value="sirup" {% if request.POST.oblik == "sirup" %}selected{% endif %}>Sirup</option>
+<option value="oralni_rastvor" {% if request.POST.oblik == "oralni_rastvor" %}selected{% endif %}>Oralni rastvor</option>
+<option value="kapi" {% if request.POST.oblik == "kapi" %}selected{% endif %}>Kapi</option>
+<option value="tinktura" {% if request.POST.oblik == "tinktura" %}selected{% endif %}>Tinktura</option>
+<option value="sprej" {% if request.POST.oblik == "sprej" %}selected{% endif %}>Sprej</option>
+<option value="ulje" {% if request.POST.oblik == "ulje" %}selected{% endif %}>Ulje</option>
+<option value="čaj" {% if request.POST.oblik == "čaj" %}selected{% endif %}>Čaj</option>
+</optgroup>
+</select></p>
+
+<p>Neto količina pakovanja:<br>
+<div class="flex-row">
+<input type="number" name="neto_kolicina" min="0" step="any" required value="{{ request.POST.neto_kolicina|default_if_none:'' }}" {% if greske.neto_kolicina %}class="invalid"{% endif %}>
+<select name="jedinica_kolicina" required {% if greske.jedinica_kolicina %}class="invalid"{% endif %}>
+<option value="">Odaberi jedinicu</option>
+<option value="g" {% if request.POST.jedinica_kolicina == "g" %}selected{% endif %}>g</option>
+<option value="mg" {% if request.POST.jedinica_kolicina == "mg" %}selected{% endif %}>mg</option>
+<option value="ml" {% if request.POST.jedinica_kolicina == "ml" %}selected{% endif %}>ml</option>
+</select>
+</div></p>
+</fieldset>
+
+<!-- 2. Ambalaža i čuvanje -->
+<fieldset>
+<legend>2. Ambalaža i uslovi čuvanja</legend>
+<p>Tip ambalaže:<br>
+<select name="tip_ambalaze" required {% if greske.tip_ambalaze %}class="invalid"{% endif %}>
+<option value="">Odaberite tip</option>
+<option value="bocica" {% if request.POST.tip_ambalaze == "bocica" %}selected{% endif %}>Bočica</option>
+<option value="blister" {% if request.POST.tip_ambalaze == "blister" %}selected{% endif %}>Blister</option>
+<option value="vrećica" {% if request.POST.tip_ambalaze == "vrećica" %}selected{% endif %}>Vrećica</option>
+<option value="pakiranje_caj" {% if request.POST.tip_ambalaze == "pakiranje_caj" %}selected{% endif %}>Pakovanje za čaj</option>
+<option value="tubica" {% if request.POST.tip_ambalaze == "tubica" %}selected{% endif %}>Tubica</option>
+<option value="teglica" {% if request.POST.tip_ambalaze == "teglica" %}selected{% endif %}>Teglica</option>
+<option value="kartonska_kutija" {% if request.POST.tip_ambalaze == "kartonska_kutija" %}selected{% endif %}>Kartonska kutija</option>
+<option value="bocica_kapaljka" {% if request.POST.tip_ambalaze == "bocica_kapaljka" %}selected{% endif %}>Bočica sa kapaljkom</option>
+</select></p>
+
+<p>Materijal ambalaže:<br>
+<select name="materijal_ambalaze" required {% if greske.materijal_ambalaze %}class="invalid"{% endif %}>
+<option value="">Odaberite materijal</option>
+<option value="plastika" {% if request.POST.materijal_ambalaze == "plastika" %}selected{% endif %}>Plastika</option>
+<option value="staklo" {% if request.POST.materijal_ambalaze == "staklo" %}selected{% endif %}>Staklo</option>
+<option value="aluminij" {% if request.POST.materijal_ambalaze == "aluminij" %}selected{% endif %}>Aluminijum</option>
+<option value="papir" {% if request.POST.materijal_ambalaze == "papir" %}selected{% endif %}>Papir / Karton</option>
+<option value="metal" {% if request.POST.materijal_ambalaze == "metal" %}selected{% endif %}>Metal</option>
+</select></p>
+
+<p>Minimalna temperatura čuvanja (°C):<br>
+<input type="number" name="temp_min" step="1" required value="{{ request.POST.temp_min|default_if_none:'' }}" {% if greske.temp_min %}class="invalid"{% endif %}></p>
+
+<p>Maksimalna temperatura čuvanja (°C):<br>
+<input type="number" name="temp_max" step="1" required value="{{ request.POST.temp_max|default_if_none:'' }}" {% if greske.temp_max %}class="invalid"{% endif %}></p>
+<p style="display: flex; justify-content: space-between; align-items: center;">
+
+<fieldset>
+<legend>Čuvanje</legend>
+<label><input type="checkbox" name="cuva_od_svjetlosti"> Čuvati zaštićeno od svjetlosti</label><br>
+<label><input type="checkbox" name="cuva_od_vlage"> Čuvati zaštićeno od vlage</label>
+</fieldset>
+
+<fieldset>
+<legend>Serija i rok</legend>
+<p>Serija proizvoda:<br><input type="text" name="serija"></p>
+<p>Rok trajanja:<br><input type="date" name="rok_trajanja"></p>
+</fieldset>
+
+<fieldset>
+<legend>Proizvođač i distributer</legend>
+<p>Proizvođač:<br><input type="text" name="proizvodjac"></p>
+<p>Uvoznik:<br><input type="text" name="uvoznik"></p>
+<p>Distributer:<br><input type="text" name="distributer"></p>
+<p>Zemlja porijekla:<br><input type="text" name="zemlja_porijekla"></p>
+</fieldset>
+</fieldset>
+<!-- 3. Namena i način primjene -->
+<fieldset>
+<legend>3. Namjena i način primjene</legend>
+<p>Zdravstvene izjave:<br>
+<select name="namena" required {% if greske.namena %}class="invalid"{% endif %}>
+<option value="">Odaberite namenu</option>
+<option value="poboljsava_imunitet" {% if request.POST.namena == "poboljsava_imunitet" %}selected{% endif %}>Poboljšava imunitet</option>
+<option value="poboljsava_probavu" {% if request.POST.namena == "poboljsava_probavu" %}selected{% endif %}>Poboljšava probavu</option>
+<option value="zdravlje_kose_koze" {% if request.POST.namena == "zdravlje_kose_koze" %}selected{% endif %}>Zdravlje kose / kože / noktiju</option>
+<option value="poboljsava_kosti" {% if request.POST.namena == "poboljsava_kosti" %}selected{% endif %}>Poboljšava zdravlje kostiju</option>
+<option value="smanjuje_umor" {% if request.POST.namena == "smanjuje_umor" %}selected{% endif %}>Smanjuje umor</option>
+<option value="poboljsava_cirkulaciju" {% if request.POST.namena == "poboljsava_cirkulaciju" %}selected{% endif %}>Poboljšava cirkulaciju</option>
+<option value="podrzava_jetru" {% if request.POST.namena == "podrzava_jetru" %}selected{% endif %}>Podrška funkciji jetre</option>
+<option value="poboljsava_snovi" {% if request.POST.namena == "poboljsava_snovi" %}selected{% endif %}>Poboljšava san</option>
+<option value="opste_zdravlje" {% if request.POST.namena == "opste_zdravlje" %}selected{% endif %}>Opšte zdravlje</option>
+<option value="poboljsava_imunitet_probavu" {% if request.POST.namena == "poboljsava_imunitet_probavu" %}selected{% endif %}>Imunitet + probava</option>
+<option value="podržava normalan nivo hemoglobina" {% if request.POST.namena == "podržava normalan nivo hemoglobina" %}selected{% endif %}>Podržava normalan nivo hemoglobina</option>
+</select></p>
+
+<p>Preporučena dnevna doza:<br>
+<div class="flex-row">
+<input type="number" 
+       id="dozaInput"
+       name="doza" 
+       min="0" 
+       step="any" 
+       required 
+       value="{{ request.POST.doza|default_if_none:'' }}"
+       {% if greske.doza %}class="invalid"{% endif %}>
+
+<div id="dozaMessage" class="message"></div><select name="jedinica_doza" required {% if greske.jedinica_doza %}class="invalid"{% endif %}>
+<option value="">Odaberi jedinicu</option>
+<option value="kapsula" {% if request.POST.jedinica_doza == "kapsula" %}selected{% endif %}>Kapsula</option>
+<option value="tableta" {% if request.POST.jedinica_doza == "tableta" %}selected{% endif %}>Tableta</option>
+<option value="ml" {% if request.POST.jedinica_doza == "ml" %}selected{% endif %}>ml</option>
+<option value="kasika" {% if request.POST.jedinica_doza == "kasika" %}selected{% endif %}>Kašika</option>
+<option value="kasicica" {% if request.POST.jedinica_doza == "kasicica" %}selected{% endif %}>Kašičica</option>
+<option value="vrecica" {% if request.POST.jedinica_doza == "vrecica" %}selected{% endif %}>Vrećica</option>
+</select>
+</div></p>
+
+<p>Način primjene:<br>
+<select name="nacin_uzimanja" required {% if greske.nacin_uzimanja %}class="invalid"{% endif %}>
+<option value="">Odaberite način</option>
+<option value="oralno" {% if request.POST.nacin_uzimanja == "oralno" %}selected{% endif %}>Oralno</option>
+<option value="sublingvalno" {% if request.POST.nacin_uzimanja == "sublingvalno" %}selected{% endif %}>Sublingvalno</option>
+<option value="lokalno" {% if request.POST.nacin_uzimanja == "lokalno" %}selected{% endif %}>Lokalno</option>
+<option value="inhalacija" {% if request.POST.nacin_uzimanja == "inhalacija" %}selected{% endif %}>Inhalacija</option>
+</select></p>
+<p>Detaljan opis načina primjene:<br>
+<textarea name="opis_uzimanja" rows="4" placeholder="Npr. Uzimati 1 tabletu tri puta dnevno uz obrok, najbolje ujutro i poslijepodne, uz dovoljnu količinu vode."
+          style="width:100%;">{{ request.POST.opis_uzimanja|default_if_none:'' }}</textarea>
+</p>
+<p>
+    Trajanje primjene / ograničenje trajanja:<br>
+    <input type="text" name="trajanje_primjene" 
+           placeholder="Ne preporučuje se uzimanje duže od 4 sedmice u kontinuitetu"
+           value="{{ request.POST.trajanje_primjene|default_if_none:'' }}">
+</p>
+</fieldset>
+
+<fieldset>
+<legend>4. Aktivni sastojci</legend>
+
+<!-- Tabela za aktivne sastojke -->
+<table border="1" cellpadding="6" cellspacing="0" style="width:100%; border-collapse: collapse;">
+    <thead style="background-color:#77cee6">
+        <tr>
+            <th>Aktivni sastojak</th>
+            <th>Količina u dozi (npr. 3 tablete)</th>
+            <th>% NRV*</th>
+            <th>Količina na 100 g</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><input type="text" name="sastojak_0" placeholder="Suvi vodeni ekstrakt ploda godžija (Lycium barbarum L.) 4:1"></td>
+            <td><input type="text" name="kolicina_doz_0" placeholder="900 mg - 3 tablete"></td>
+            <td><input type="text" name="percent_nrv_0" placeholder="%"></td>
+            <td><input type="text" name="na_100g_0" placeholder="39,63 g"></td>
+        </tr>
+        <tr>
+            <td><input type="text" name="sastojak_1" placeholder="Suvi vodeno-etanolni ekstrakt korijena sladića (Glycyrrhiza glabra L.) 4:1"></td>
+            <td><input type="text" name="kolicina_doz_1" placeholder="112,5 mg - 3 tablete"></td>
+            <td><input type="text" name="percent_nrv_1" placeholder="%"></td>
+            <td><input type="text" name="na_100g_1" placeholder="4,95 g"></td>
+        </tr>
+        <!-- Dodaj više redova po potrebi -->
+    </tbody>
+</table>
+
+<div class="help-text">Unesite sve aktivne sastojke, količine u dozi, % NRV i količinu na 100 g. Vrijednosti unosi korisnik.</div>
+
+<button type="button" onclick="addRow()">Dodaj još sastojaka</button>
+
+<!-- Prompt/textarea za sve sastojke (aktivni + pomoćni) -->
+<div style="margin-top:15px;">
+    <label for="all_ingredients">Svi sastojci (aktivni i pomoćni):</label><br>
+    <textarea id="all_ingredients" name="all_ingredients" rows="5" style="width:100%;" 
+        placeholder="Unesite sve sastojke kako su na etiketi, npr. Suvi vodeni ekstrakt ploda godžija 900 mg, mikrokristalna celuloza, stearinska kiselina, magnezijum-stearat..."></textarea>
+</div>
+
+
+</fieldset>
+
+<script>
+function addRow() {
+    const table = document.querySelector("table tbody");
+    const rowCount = table.rows.length;
+    const row = table.insertRow();
+    row.innerHTML = `
+        <td><input type="text" name="sastojak_${rowCount}" placeholder="Naziv sastojka"></td>
+        <td><input type="text" name="kolicina_doz_${rowCount}" placeholder="Količina u dozi"></td>
+        <td><input type="text" name="percent_nrv_${rowCount}" placeholder="% NRV"></td>
+        <td><input type="text" name="na_100g_${rowCount}" placeholder="Količina na 100 g"></td>
+    `;
+}
+</script>
+
+<!-- 5. Ograničenja i upozorenja -->
+<fieldset>
+<legend>5. Ograničenja i upozorenja</legend>
+
+<h3>Postoje ograničenja upotrebe</h3>
+<div id="ogranicenjaBox" class="checkbox-group {% if greske.ogranicenja_djeca or greske.ogranicenja_trudnice or greske.ogranicenja_dojilje or greske.ogranicenja_hronicni %}invalid{% endif %}">
+    <label><input type="checkbox" name="ogranicenja_djeca" {% if request.POST.ogranicenja_djeca %}checked{% endif %}> Djeca</label><br>
+    <label><input type="checkbox" name="ogranicenja_trudnice" {% if request.POST.ogranicenja_trudnice %}checked{% endif %}> Trudnice</label><br>
+    <label><input type="checkbox" name="ogranicenja_dojilje" {% if request.POST.ogranicenja_dojilje %}checked{% endif %}> Dojilje</label><br>
+    <label><input type="checkbox" name="ogranicenja_hronicni" {% if request.POST.ogranicenja_hronicni %}checked{% endif %}> Hronični pacijenti</label>
+</div>
+
+<h3>Mjere opreza</h3>
+<div id="mjereBox" class="checkbox-group {% if greske.mjera_djeca or greske.mjera_doziranje or greske.mjera_zamjena or greske.mjera_obrok or greske.mjera_skladistenje %}invalid{% endif %}">
+    <label><input type="checkbox" name="mjera_djeca" {% if request.POST.mjera_djeca %}checked{% endif %}> Čuvati van domašaja djece</label><br>
+    <label><input type="checkbox" name="mjera_doziranje" {% if request.POST.mjera_doziranje %}checked{% endif %}> Ne prekoračiti preporučenu dnevnu dozu</label><br>
+    <label><input type="checkbox" name="mjera_zamjena" {% if request.POST.mjera_zamjena %}checked{% endif %}> Nije zamjena za raznovrsnu i uravnoteženu ishranu</label><br>
+    <label><input type="checkbox" name="mjera_obrok" {% if request.POST.mjera_obrok %}checked{% endif %}> Preporučuje se upotreba uz obrok</label><br>
+    <label><input type="checkbox" name="mjera_skladistenje" {% if request.POST.mjera_skladistenje %}checked{% endif %}> Čuvati na suhom i tamnom mjestu</label>
+</div>
+
+<h3>Upozorenja</h3>
+<div id="upozorenjaBox" class="checkbox-group {% if greske.upozorenje_alergije or greske.upozorenje_lijekovi or greske.upozorenje_gi or greske.upozorenje_pritisak or greske.upozorenje_secer %}invalid{% endif %}">
+    <label><input type="checkbox" name="upozorenje_alergije" {% if request.POST.upozorenje_alergije %}checked{% endif %}> Može izazvati alergijske reakcije</label><br>
+    <label><input type="checkbox" name="upozorenje_lijekovi" {% if request.POST.upozorenje_lijekovi %}checked{% endif %}> Moguća interakcija sa lijekovima</label><br>
+    <label><input type="checkbox" name="upozorenje_gi" {% if request.POST.upozorenje_gi %}checked{% endif %}> Može izazvati gastrointestinalne smetnje</label><br>
+    <label><input type="checkbox" name="upozorenje_pritisak" {% if request.POST.upozorenje_pritisak %}checked{% endif %}> Može uticati na krvni pritisak</label><br>
+    <label><input type="checkbox" name="upozorenje_secer" {% if request.POST.upozorenje_secer %}checked{% endif %}> Može uticati na nivo šećera u krvi</label>
+</div>
+
+<!-- Prompt / textarea za disclaimer -->
+<div style="margin-top:10px;">
+    <label for="disclaimer">Napomene i upozorenja:</label><br>
+    <textarea id="disclaimer" name="disclaimer" rows="6" style="width:100%;" 
+        placeholder="Unesite napomene i upozorenja sa etikete proizvoda, npr. Dodaci ishrani nisu zamjena za raznovrsnu ishranu, čuvati van domašaja djece, ne preporučuje se primjena kod trudnica i dojilja..."></textarea>
+</div>
+</fieldset>
+
+<!-- 6. Biljna droga -->
+<fieldset id="biljna-container">
+<legend>6. Biljna droga</legend>
+<div class="biljna-droga card {% if greske.biljna_droga %}invalid{% endif %}">
+<p>Naziv biljke (SR): 
+<input type="text" name="biljka_sr" value="{{ request.POST.biljka_sr.0|default:'' }}" {% if greske.biljka_sr_0 %}class="invalid"{% endif %}></p>
+
+<p>Latinski naziv: 
+<input type="text" name="biljka_lat" value="{{ request.POST.biljka_lat.0|default:'' }}" {% if greske.biljka_lat_0 %}class="invalid"{% endif %}></p>
+
+<p>Dio biljke: 
+<select name="dio_biljke" {% if greske.dio_biljke_0 %}class="invalid"{% endif %}>
+<option value="">Odaberite</option>
+<option value="korijen" {% if request.POST.dio_biljke.0 == "korijen" %}selected{% endif %}>Korijen</option>
+<option value="rizom" {% if request.POST.dio_biljke.0 == "rizom" %}selected{% endif %}>Rizom</option>
+<option value="list" {% if request.POST.dio_biljke.0 == "list" %}selected{% endif %}>List</option>
+<option value="cvijet" {% if request.POST.dio_biljke.0 == "cvijet" %}selected{% endif %}>Cvijet</option>
+<option value="plod" {% if request.POST.dio_biljke.0 == "plod" %}selected{% endif %}>Plod</option>
+<option value="sjeme" {% if request.POST.dio_biljke.0 == "sjeme" %}selected{% endif %}>Sjeme</option>
+<option value="kora" {% if request.POST.dio_biljke.0 == "kora" %}selected{% endif %}>Kora</option>
+<option value="herba" {% if request.POST.dio_biljke.0 == "herba" %}selected{% endif %}>Herba</option>
+</select></p>
+
+<p>Priprema biljne droge: 
+<select name="stanje_biljke" {% if greske.stanje_biljke_0 %}class="invalid"{% endif %}>
+<option value="">Odaberite</option>
+<option value="svjeza" {% if request.POST.stanje_biljke.0 == "svjeza" %}selected{% endif %}>Svježa</option>
+<option value="osusena" {% if request.POST.stanje_biljke.0 == "osusena" %}selected{% endif %}>Osušena</option>
+<option value="fermentisana" {% if request.POST.stanje_biljke.0 == "fermentisana" %}selected{% endif %}>Fermentisana</option>
+<option value="preradjena" {% if request.POST.stanje_biljke.0 == "preradjena" %}selected{% endif %}>Prerađena / ekstrakt</option>
+<option value="prah" {% if request.POST.stanje_biljke.0 == "prah" %}selected{% endif %}>Prah</option>
+</select></p>
+
+<p>Tip ekstrakta / rastvarača:
+<select name="rastvarac" {% if greske.rastvarac_0 %}class="invalid"{% endif %}>
+<option value="">Odaberite</option>
+<option value="voda" {% if request.POST.rastvarac.0 == "voda" %}selected{% endif %}>Voda</option>
+<option value="etanol_70" {% if request.POST.rastvarac.0 == "etanol_70" %}selected{% endif %}>70% Etanol</option>
+<option value="metanol" {% if request.POST.rastvarac.0 == "metanol" %}selected{% endif %}>Metanol</option>
+<option value="aceton" {% if request.POST.rastvarac.0 == "aceton" %}selected{% endif %}>Aceton</option>
+<option value="glicerol" {% if request.POST.rastvarac.0 == "glicerol" %}selected{% endif %}>Glicerol</option>
+<option value="propilen_glikol" {% if request.POST.rastvarac.0 == "propilen_glikol" %}selected{% endif %}>Propilen glikol</option>
+</select></p>
+
+<p>DER (Drug–Extract Ratio):<br>
+<input type="text" name="der" placeholder="npr. 5:1" value="{{ request.POST.der.0|default:'' }}" {% if greske.der_0 %}class="invalid"{% endif %}></p>
+<textarea name="poruka" id="poruka" rows="4" cols="50" placeholder="Ostavite komentar...."></textarea>
+<p>Standardizacija ekstrakta:<div class="flex-row">
+<input type="number" name="standardizacija_proc" min="0" step="any" style="width:80px;" value="{{ request.POST.standardizacija_proc.0|default:'' }}" {% if greske.standardizacija_proc_0 %}class="invalid"{% endif %}> %
+<select name="standardizacija_supstanca" {% if greske.standardizacija_supstanca_0 %}class="invalid"{% endif %}>
+<option value="">Odaberi supstancu</option>
+{% for sup in supstance %}
+<option value="{{ sup.id }}" {% if request.POST.standardizacija_supstanca.0 == sup.id|stringformat:"s" %}selected{% endif %}>{{ sup.naziv }}</option>
+{% endfor %}
+</select>
+</div></p>
+
+<p>Zemlja porijekla:
+<select name="zemlja_porijekla" {% if greske.zemlja_porijekla_0 %}class="invalid"{% endif %}>
+<option value="">Odaberi zemlju</option>
+<option value="srbija" {% if request.POST.zemlja_porijekla.0 == "srbija" %}selected{% endif %}>Srbija</option>
+<option value="bih" {% if request.POST.zemlja_porijekla.0 == "bih" %}selected{% endif %}>Bosna i Hercegovina</option>
+<option value="eu" {% if request.POST.zemlja_porijekla.0 == "eu" %}selected{% endif %}>EU</option>
+</select></p>
+
+<p>Količina:<div class="flex-row">
+<input type="number" name="kolicina_biljna" min="0" step="any" value="{{ request.POST.kolicina_biljna.0|default:'' }}" {% if greske.kolicina_biljna_0 %}class="invalid"{% endif %}>
+<select name="jedinica_biljna" {% if greske.jedinica_biljna_0 %}class="invalid"{% endif %}>
+<option value="mg" {% if request.POST.jedinica_biljna.0 == "mg" %}selected{% endif %}>mg</option>
+<option value="g" {% if request.POST.jedinica_biljna.0 == "g" %}selected{% endif %}>g</option>
+<option value="ml" {% if request.POST.jedinica_biljna.0 == "ml" %}selected{% endif %}>ml</option>
+<option value="%" {% if request.POST.jedinica_biljna.0 == "%" %}selected{% endif %}>%</option>
+</select>
+</div></p>
+</div>
+<button type="button" class="add-btn" onclick="addBiljna()">Dodaj još biljnu drogu</button>
+</fieldset>
+
+<!-- 7. Aktivne supstance -->
+<fieldset id="aktivna-container">
+<legend>7. Aktivne supstance</legend>
+<div class="aktivna-supstanca card {% if greske.aktivne_supstance %}invalid{% endif %}">
+<p>Naziv supstance: 
+<input type="text" name="aktivna_naziv" value="{{ request.POST.aktivna_naziv.0|default:'' }}" {% if greske.aktivna_naziv_0 %}class="invalid"{% endif %}></p>
+
+<p>Hemijski oblik: 
+<input type="text" name="hemijski_oblik" value="{{ request.POST.hemijski_oblik.0|default:'' }}" {% if greske.hemijski_oblik_0 %}class="invalid"{% endif %}></p>
+
+<p>Količina:<div class="flex-row">
+<input type="number" name="kolicina_aktivna" min="0" step="any" value="{{ request.POST.kolicina_aktivna.0|default:'' }}" {% if greske.kolicina_aktivna_0 %}class="invalid"{% endif %}>
+<select name="jedinica_aktivna" {% if greske.jedinica_aktivna_0 %}class="invalid"{% endif %}>
+<option value="mg" {% if request.POST.jedinica_aktivna.0 == "mg" %}selected{% endif %}>mg</option>
+<option value="µg" {% if request.POST.jedinica_aktivna.0 == "µg" %}selected{% endif %}>µg</option>
+<option value="g" {% if request.POST.jedinica_aktivna.0 == "g" %}selected{% endif %}>g</option>
+<option value="ml" {% if request.POST.jedinica_aktivna.0 == "ml" %}selected{% endif %}>ml</option>
+<option value="IU" {% if request.POST.jedinica_aktivna.0 == "IU" %}selected{% endif %}>IU</option>
+</select>
+</div></p>
+</div>
+<button type="button" class="add-btn" onclick="addAktivna()">Dodaj još supstanci</button>
+</fieldset>
+
+<fieldset>
+<legend>8. Energetsko-nutritivna tabela</legend>
+
+<!-- Objašnjenje -->
+<p>
+Ako je dnevna doza proizvoda manja od 12 kcal ili 50 kJ, energetska i nutritivna vrijednost se smatra zanemarljivom i nije obavezno unositi vrijednosti u tabelu. U tom slučaju možete unijeti komentar u polje ispod.
+Ako je dnevna doza veća od ovog praga, unesite sve relevantne nutritivne vrijednosti u tabelu.
+</p>
+
+<!-- Polje za komentar -->
+<label for="nutrient-comment">Komentar:</label><br>
+<textarea id="nutrient-comment" name="nutrient_comment" rows="2" style="width:100%;" placeholder="Ovde unesite napomenu ako je energetska/nutritivna vrednost zanemarljiva..."></textarea>
+
+<br><br>
+
+<table border="1" cellpadding="6" cellspacing="0" style="width:100%; border-collapse: collapse;">
+    <thead style="background-color:#77cee6">
+        <tr>
+            <th>Naziv nutritivne vrijednosti</th>
+            <th>Količina u dnevnoj dozi</th>
+            <th>% NRV*</th>
+            <th>Količina na 100 g</th>
+        </tr>
+    </thead>
+    <tbody id="nutrient-tbody">
+        <tr>
+            <td><input type="text" name="nutrient_0" placeholder="Energija (kJ/kcal)"></td>
+            <td><input type="text" name="kolicina_doz_nutrient_0" placeholder="npr. 50 kJ / 12 kcal"></td>
+            <td><input type="text" name="percent_nrv_nutrient_0" placeholder="%"></td>
+            <td><input type="text" name="na_100g_nutrient_0" placeholder="1667 kJ / 400 kcal"></td>
+        </tr>
+        <tr>
+            <td><input type="text" name="nutrient_1" placeholder="Masti"></td>
+            <td><input type="text" name="kolicina_doz_nutrient_1" placeholder="npr. 0,5 g"></td>
+            <td><input type="text" name="percent_nrv_nutrient_1" placeholder="%"></td>
+            <td><input type="text" name="na_100g_nutrient_1" placeholder="6,25 g"></td>
+        </tr>
+        <tr>
+            <td><input type="text" name="nutrient_2" placeholder="Ugljeni hidrati"></td>
+            <td><input type="text" name="kolicina_doz_nutrient_2" placeholder="npr. 2 g"></td>
+            <td><input type="text" name="percent_nrv_nutrient_2" placeholder="%"></td>
+            <td><input type="text" name="na_100g_nutrient_2" placeholder="25 g"></td>
+        </tr>
+        <tr>
+            <td><input type="text" name="nutrient_3" placeholder="Proteini"></td>
+            <td><input type="text" name="kolicina_doz_nutrient_3" placeholder="npr. 0,3 g"></td>
+            <td><input type="text" name="percent_nrv_nutrient_3" placeholder="%"></td>
+            <td><input type="text" name="na_100g_nutrient_3" placeholder="3,75 g"></td>
+        </tr>
+        <tr>
+            <td><input type="text" name="nutrient_4" placeholder="So / Natrijum"></td>
+            <td><input type="text" name="kolicina_doz_nutrient_4" placeholder="npr. 0,01 g"></td>
+            <td><input type="text" name="percent_nrv_nutrient_4" placeholder="%"></td>
+            <td><input type="text" name="na_100g_nutrient_4" placeholder="0,125 g"></td>
+        </tr>
+    </tbody>
+</table>
+
+<br>
+<button type="button" onclick="addNutrientRow()">Dodaj još nutritivnih vrednosti</button>
+
+<script>
+function addNutrientRow() {
+    const tbody = document.getElementById("nutrient-tbody");
+    const rowCount = tbody.rows.length;
+    const row = tbody.insertRow();
+    row.innerHTML = `
+        <td><input type="text" name="nutrient_${rowCount}" placeholder="Naziv nutritivne vrednosti"></td>
+        <td><input type="text" name="kolicina_doz_nutrient_${rowCount}" placeholder="Količina u dozi"></td>
+        <td><input type="text" name="percent_nrv_nutrient_${rowCount}" placeholder="% NRV"></td>
+        <td><input type="text" name="na_100g_nutrient_${rowCount}" placeholder="Količina na 100 g"></td>
+    `;
+}
+</script>
+</fieldset>
+
+<!-- 9. BSE/TSE -->
+<fieldset>
+<legend>9. Sertifikati BSE/TSE i GMO</legend>
+
+<p>
+Unesite informacije o BSE/TSE i GMO samo ako proizvod sadrži životinjske komponente ili genetski modifikovane sastojke. 
+Ako proizvod ne sadrži ove komponente, možete ostaviti opciju “Nije potrebno” i polje za napomenu prazno.
+</p>
+
+<div class="card {% if greske.bse_status or greske.bse_napomena %}invalid{% endif %}">
+<p>Stanje sertifikata:</p>
+<div class="flex-row">
+<input type="radio" name="bse_status" value="nije_potrebno" {% if request.POST.bse_status == "nije_potrebno" %}checked{% endif %}> Nije potrebno
+<input type="radio" name="bse_status" value="prilozeno" {% if request.POST.bse_status == "prilozeno" %}checked{% endif %}> Priloženo
+</div>
+<div id="bse_details">
+<p>Napomena / naziv dokumenta (BSE/TSE ili GMO):<br>
+<input type="text" name="bse_napomena" placeholder="Unesite naziv dokumenta ili komentar" value="{{ request.POST.bse_napomena|default:'' }}" {% if greske.bse_napomena %}class="invalid"{% endif %}>
+</p>
+</div>
+</div>
+</fieldset>
+
+<!-- 10. Klinička istraživanja -->
+<fieldset id="study-container">
+<legend>10. Klinička istraživanja i naučni dokazi</legend>
+<div class="study-entry card {% if greske.studije %}invalid{% endif %}">
+<p>Naziv studije: 
+<input type="text" name="study_naziv" value="{{ request.POST.study_naziv.0|default:'' }}" {% if greske.study_naziv_0 %}class="invalid"{% endif %}></p>
+
+<p>Tip studije: 
+<select name="study_tip" {% if greske.study_tip_0 %}class="invalid"{% endif %}>
+<option value="klinicko" {% if request.POST.study_tip.0 == "klinicko" %}selected{% endif %}>Kliničko</option>
+<option value="laboratorijsko" {% if request.POST.study_tip.0 == "laboratorijsko" %}selected{% endif %}>Laboratorijsko / pre-kliničko</option>
+<option value="literatura" {% if request.POST.study_tip.0 == "literatura" %}selected{% endif %}>Literatura / review</option>
+</select>
+</p>
+
+<p>Godina / referenca: 
+<input type="text" name="study_godina" placeholder="npr. 2021, Journal of Ethnopharmacology" value="{{ request.POST.study_godina.0|default:'' }}" {% if greske.study_godina_0 %}class="invalid"{% endif %}></p>
+
+<p>DOI broj:<br>
+<input type="text" name="study_doi" placeholder="npr. 10.1016/j.jep.2021.114321" value="{{ request.POST.study_doi.0|default:'' }}" {% if greske.study_doi_0 %}class="invalid"{% endif %}></p>
+</div>
+<button type="button" class="add-btn" onclick="addStudy()">Dodaj još studiju</button>
+</fieldset>
+
+
+
+<hr>
+<button type="submit">Pošalji prijavu</button>
+</form>
+</div>
+
+<script>
+// --- Dodavanje novih sekcija ---
+function addBiljna() {
+    let container = document.getElementById("biljna-container");
+    let original = container.querySelector(".biljna-droga:last-of-type");
+    let clone = original.cloneNode(true);
+    clone.querySelectorAll("input").forEach(i => i.value = "");
+    clone.querySelectorAll("select").forEach(s => s.selectedIndex = 0);
+    container.insertBefore(clone, container.querySelector(".add-btn"));
+}
+
+function addAktivna() {
+    let container = document.getElementById("aktivna-container");
+    let original = container.querySelector(".aktivna-supstanca:last-of-type");
+    let clone = original.cloneNode(true);
+    clone.querySelectorAll("input").forEach(i => i.value = "");
+    clone.querySelectorAll("select").forEach(s => s.selectedIndex = 0);
+    container.insertBefore(clone, container.querySelector(".add-btn"));
+}
+
+function addStudy() {
+    let container = document.getElementById("study-container");
+    let original = container.querySelector(".study-entry:last-of-type");
+    let clone = original.cloneNode(true);
+    clone.querySelectorAll("input").forEach(i => i.value = "");
+    clone.querySelectorAll("select").forEach(s => s.selectedIndex = 0);
+    container.insertBefore(clone, container.querySelector(".add-btn"));
+}
+// Vrijednosti iz baze
+const preporucenaDoza = {{ dodatak.doza|default:0 }};
+const maksimalnaDoza = {{ dodatak.maksimalna_dnevna_doza|default:0 }};
+const dozaInput = document.getElementById("dozaInput");
+const dozaMessage = document.getElementById("dozaMessage");
+
+dozaInput.addEventListener("input", function() {
+    const unesena = parseFloat(this.value);
+
+    // reset
+    this.classList.remove("invalid");
+    this.classList.remove("warning");
+    dozaMessage.textContent = "";
+    dozaMessage.className = "message";
+
+    if (isNaN(unesena)) return;
+
+    // 🔴 Preko maksimalne
+    if (unesena > maksimalnaDoza) {
+        this.classList.add("invalid");
+        dozaMessage.textContent = "Prekoračena je maksimalna dnevna doza!";
+        dozaMessage.classList.add("error");
+    }
+
+    // 🟡 Preko preporučene ali ispod maksimalne
+    else if (unesena > preporucenaDoza) {
+        this.classList.add("warning");
+        dozaMessage.textContent = "Prekoračena je preporučena dnevna doza.";
+        dozaMessage.classList.add("warning");
+    }
+});
+</script>
+</body>
+</html>
