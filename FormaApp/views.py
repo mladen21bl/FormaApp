@@ -22,6 +22,24 @@ def index(request):
 
 
 
+def index(request):
+    if request.method == "POST":
+        form = StudentForm(request.POST)
+        if form.is_valid():
+            # Spremamo podatke u session
+            request.session["ime"] = form.cleaned_data["ime"]
+            request.session["prezime"] = form.cleaned_data["prezime"]
+            request.session["broj_indeksa"] = form.cleaned_data["broj_indeksa"]
+
+            # Preusmjeravanje na test.html
+            return redirect("test")  # "test" je ime URL-a koji pokazuje na test.html
+    else:
+        form = StudentForm()
+
+    return render(request, "FormaApp/index.html", {"form": form})
+
+
+
 
 
 def test(request):
@@ -142,6 +160,7 @@ def test(request):
         "prezime": prezime,
         "broj_indeksa": broj_indeksa
     })
+
 
 def success(request):
     return render(request, "FormaApp/success.html")

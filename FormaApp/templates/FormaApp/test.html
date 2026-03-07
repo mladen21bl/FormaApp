@@ -174,10 +174,9 @@ input.warning { border-color: orange; background-color: #fff4cc; }
        min="0" 
        step="any" 
        required 
-       value="{{ request.POST.doza|default_if_none:'' }}"
-       {% if greske.doza %}class="invalid"{% endif %}>
+       value="{{ request.POST.doza|default_if_none:'' }}">
 
-<div id="dozaMessage" class="message"></div><select name="jedinica_doza" required {% if greske.jedinica_doza %}class="invalid"{% endif %}>
+<div id="dozaMessage" class="message"></div><select name="jedinica_doza" required>
 <option value="">Odaberi jedinicu</option>
 <option value="kapsula" {% if request.POST.jedinica_doza == "kapsula" %}selected{% endif %}>Kapsula</option>
 <option value="tableta" {% if request.POST.jedinica_doza == "tableta" %}selected{% endif %}>Tableta</option>
@@ -582,18 +581,7 @@ dozaInput.addEventListener("input", function() {
     if (isNaN(unesena)) return;
 
     // 🔴 Preko maksimalne
-    if (unesena > maksimalnaDoza) {
-        this.classList.add("invalid");
-        dozaMessage.textContent = "Prekoračena je maksimalna dnevna doza!";
-        dozaMessage.classList.add("error");
-    }
-
-    // 🟡 Preko preporučene ali ispod maksimalne
-    else if (unesena > preporucenaDoza) {
-        this.classList.add("warning");
-        dozaMessage.textContent = "Prekoračena je preporučena dnevna doza.";
-        dozaMessage.classList.add("warning");
-    }
+    
 });
 </script>
 </body>

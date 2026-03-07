@@ -15,25 +15,27 @@
 <body>
     <h1>Prijava dodatka prehrani</h1>
 
+    <!-- Osnovni podaci -->
     <div class="section">
         <h2>Osnovni podaci</h2>
         <p><strong>Ime i prezime:</strong> {{ ime }} {{ prezime }}</p>
         <p><strong>Broj indeksa:</strong> {{ broj_indeksa }}</p>
-        <p><strong>Naziv proizvoda:</strong> {{ naziv }}</p>
-        <p><strong>Oblik proizvoda:</strong> {{ oblik }}</p>
-        <p><strong>Neto količina:</strong> {{ neto_kolicina }} {{ jedinica_kolicina }}</p>
-        <p><strong>Tip ambalaže:</strong> {{ tip_ambalaze }} / <strong>Materijal:</strong> {{ materijal_ambalaze }}</p>
-        <p><strong>Čuvati zaštićeno od svjetlosti:</strong> {{ cuva_od_svjetlosti }}</p>
-        <p><strong>Čuvati zaštićeno od vlage:</strong> {{ cuva_od_vlage }}</p>
-        <p><strong>Temperatura skladištenja:</strong> {{ temp_min }} - {{ temp_max }} °C</p>
-        <p><strong>Serija / Rok trajanja:</strong> {{ serija }} / {{ rok_trajanja }}</p>
-        <p><strong>Proizvođač / Uvoznik / Distributer:</strong> {{ proizvodjac }} / {{ uvoznik }} / {{ distributer }}</p>
-        <p><strong>Zemlja porijekla:</strong> {{ zemlja_porijekla }}</p>
+        <p><strong>Naziv proizvoda:</strong> {{ naziv|default:"-" }}</p>
+        <p><strong>Oblik proizvoda:</strong> {{ oblik|default:"-" }}</p>
+        <p><strong>Neto količina:</strong> {{ neto_kolicina|default:"-" }} {{ jedinica_kolicina|default:"" }}</p>
+        <p><strong>Tip ambalaže:</strong> {{ tip_ambalaze|default:"-" }} / <strong>Materijal:</strong> {{ materijal_ambalaze|default:"-" }}</p>
+        <p><strong>Čuvati zaštićeno od svjetlosti:</strong> {{ cuva_od_svjetlosti|default:"Ne" }}</p>
+        <p><strong>Čuvati zaštićeno od vlage:</strong> {{ cuva_od_vlage|default:"Ne" }}</p>
+        <p><strong>Temperatura skladištenja:</strong> {{ temp_min|default:"-" }} - {{ temp_max|default:"-" }} °C</p>
+        <p><strong>Serija / Rok trajanja:</strong> {{ serija|default:"-" }} / {{ rok_trajanja|default:"-" }}</p>
+        <p><strong>Proizvođač / Uvoznik / Distributer:</strong> {{ proizvodjac|default:"-" }} / {{ uvoznik|default:"-" }} / {{ distributer|default:"-" }}</p>
+        <p><strong>Zemlja porijekla:</strong> {{ zemlja_porijekla|default:"-" }}</p>
     </div>
 
-    {% if sastojci %}
+    <!-- Sastojci -->
     <div class="section">
         <h2>Sastojci</h2>
+        {% if sastojci %}
         <table>
             <tr>
                 <th>Naziv</th>
@@ -43,19 +45,22 @@
             </tr>
             {% for s in sastojci %}
             <tr>
-                <td>{{ s.naziv }}</td>
-                <td>{{ s.kolicina_doz }}</td>
-                <td>{{ s.percent_nrv }}</td>
-                <td>{{ s.na_100g }}</td>
+                <td>{{ s.naziv|default:"-" }}</td>
+                <td>{{ s.kolicina_doz|default:"-" }}</td>
+                <td>{{ s.percent_nrv|default:"-" }}</td>
+                <td>{{ s.na_100g|default:"-" }}</td>
             </tr>
             {% endfor %}
         </table>
+        {% else %}
+        <p>Nema unesenih sastojaka.</p>
+        {% endif %}
     </div>
-    {% endif %}
 
-    {% if nutrienti %}
+    <!-- Nutritivna vrijednost -->
     <div class="section">
         <h2>Nutritivna vrijednost</h2>
+        {% if nutrienti %}
         <table>
             <tr>
                 <th>Naziv</th>
@@ -65,35 +70,41 @@
             </tr>
             {% for n in nutrienti %}
             <tr>
-                <td>{{ n.naziv }}</td>
-                <td>{{ n.kolicina_doz }}</td>
-                <td>{{ n.percent_nrv }}</td>
-                <td>{{ n.na_100g }}</td>
+                <td>{{ n.naziv|default:"-" }}</td>
+                <td>{{ n.kolicina_doz|default:"-" }}</td>
+                <td>{{ n.percent_nrv|default:"-" }}</td>
+                <td>{{ n.na_100g|default:"-" }}</td>
             </tr>
             {% endfor %}
         </table>
+        {% else %}
+        <p>Nema unesenih nutritivnih vrijednosti.</p>
+        {% endif %}
     </div>
-    {% endif %}
 
-    {% if biljna_droga %}
+    <!-- Biljna droga -->
     <div class="section">
         <h2>Biljna droga</h2>
-        {% for b in biljna_droga %}
-        <p><strong>Naziv (SR / LAT):</strong> {{ b.sr }} / {{ b.lat }}</p>
-        <p><strong>Dio biljke:</strong> {{ b.dio }}</p>
-        <p><strong>Stanje biljke:</strong> {{ b.stanje }}</p>
-        <p><strong>Rastvarac / DER:</strong> {{ b.rastvarac }} / {{ b.der }}</p>
-        <p><strong>Standardizacija:</strong> {{ b.standardizacija_proc }}% {{ b.standardizacija_supstanca }}</p>
-        <p><strong>Zemlja porijekla / Količina / Jedinica:</strong> {{ b.zemlja }} / {{ b.kolicina }} {{ b.jedinica }}</p>
-        <p><strong>Poruka:</strong> {{ b.poruka }}</p>
-        <hr>
-        {% endfor %}
+        {% if biljna_droga %}
+            {% for b in biljna_droga %}
+            <p><strong>Naziv (SR / LAT):</strong> {{ b.sr|default:"-" }} / {{ b.lat|default:"-" }}</p>
+            <p><strong>Dio biljke:</strong> {{ b.dio|default:"-" }}</p>
+            <p><strong>Stanje biljke:</strong> {{ b.stanje|default:"-" }}</p>
+            <p><strong>Rastvarac / DER:</strong> {{ b.rastvarac|default:"-" }} / {{ b.der|default:"-" }}</p>
+            <p><strong>Standardizacija:</strong> {{ b.standardizacija_proc|default:"-" }}% {{ b.standardizacija_supstanca|default:"-" }}</p>
+            <p><strong>Zemlja porijekla / Količina / Jedinica:</strong> {{ b.zemlja|default:"-" }} / {{ b.kolicina|default:"-" }} {{ b.jedinica|default:"-" }}</p>
+            <p><strong>Poruka:</strong> {{ b.poruka|default:"-" }}</p>
+            <hr>
+            {% endfor %}
+        {% else %}
+        <p>Nema unesenih biljnih droga.</p>
+        {% endif %}
     </div>
-    {% endif %}
 
-    {% if aktivne_supstance %}
+    <!-- Aktivne supstance -->
     <div class="section">
         <h2>Aktivne supstance</h2>
+        {% if aktivne_supstance %}
         <table>
             <tr>
                 <th>Naziv</th>
@@ -103,22 +114,87 @@
             </tr>
             {% for a in aktivne_supstance %}
             <tr>
-                <td>{{ a.naziv }}</td>
-                <td>{{ a.hemijski_oblik }}</td>
-                <td>{{ a.kolicina }}</td>
-                <td>{{ a.jedinica }}</td>
+                <td>{{ a.naziv|default:"-" }}</td>
+                <td>{{ a.hemijski_oblik|default:"-" }}</td>
+                <td>{{ a.kolicina|default:"-" }}</td>
+                <td>{{ a.jedinica|default:"-" }}</td>
             </tr>
             {% endfor %}
         </table>
+        {% else %}
+        <p>Nema unesenih aktivnih supstanci.</p>
+        {% endif %}
     </div>
-    {% endif %}
 
-    {% if disclaimer %}
+    <!-- Namena i način primjene -->
+    <div class="section">
+        <h2>Namena i način primjene</h2>
+        <p><strong>Namena:</strong> {{ namena|default:"-" }}</p>
+        <p><strong>Preporučena dnevna doza:</strong> {{ preporucena_dozacija|default:"-" }} {{ jedinica_doza_namena|default:"" }}</p>
+        <p><strong>Način primjene:</strong> {{ nacin_primjene|default:"-" }}</p>
+        <p><strong>Detaljan opis načina primjene:</strong> {{ opis_nacin_primjene|default:"-" }}</p>
+        <p><strong>Trajanje primjene / ograničenje trajanja:</strong> {{ trajanje_primjene|default:"-" }}</p>
+    </div>
+
+    <!-- Ograničenja i upozorenja -->
+    <div class="section">
+        <h2>Ograničenja i upozorenja</h2>
+        <p><strong>Postoje ograničenja upotrebe:</strong></p>
+        <ul>
+            {% if ogr_limit_djeca == "Da" %}<li>Djeca</li>{% endif %}
+            {% if ogr_limit_trudnice == "Da" %}<li>Trudnice</li>{% endif %}
+            {% if ogr_limit_dojilje == "Da" %}<li>Dojilje</li>{% endif %}
+            {% if ogr_limit_hronicni == "Da" %}<li>Hronični pacijenti</li>{% endif %}
+            {% if ogr_limit_djeca != "Da" and ogr_limit_trudnice != "Da" and ogr_limit_dojilje != "Da" and ogr_limit_hronicni != "Da" %}
+                <li>Nema ograničenja</li>
+            {% endif %}
+        </ul>
+
+        <p><strong>Mjere opreza:</strong></p>
+        {% if mjere_opreza %}
+        <ul>{% for m in mjere_opreza %}<li>{{ m|default:"-" }}</li>{% endfor %}</ul>
+        {% else %}
+        <p>Nema unesenih mjera opreza.</p>
+        {% endif %}
+
+        <p><strong>Upozorenja:</strong></p>
+        {% if upozorenja %}
+        <ul>{% for u in upozorenja %}<li>{{ u|default:"-" }}</li>{% endfor %}</ul>
+        {% else %}
+        <p>Nema unesenih upozorenja.</p>
+        {% endif %}
+
+        <p><strong>Napomene i upozorenja:</strong> {{ napomene_upozorenja|default:"-" }}</p>
+    </div>
+
+    <!-- Sertifikati BSE/TSE i GMO -->
+    <div class="section">
+        <h2>Sertifikati BSE/TSE i GMO</h2>
+        <p><strong>Stanje sertifikata:</strong> {{ sertifikat_bse_tse|default:"-" }}</p>
+        <p><strong>Napomena / naziv dokumenta:</strong> {{ napomena_sertifikat|default:"-" }}</p>
+    </div>
+
+    <!-- Klinička istraživanja i naučni dokazi -->
+    <div class="section">
+        <h2>Klinička istraživanja i naučni dokazi</h2>
+        {% if klin_istrazivanja %}
+            {% for k in klin_istrazivanja %}
+            <p><strong>Naziv studije:</strong> {{ k.naziv|default:"-" }}</p>
+            <p><strong>Tip studije:</strong> {{ k.tip|default:"-" }}</p>
+            <p><strong>Godina / referenca:</strong> {{ k.godina_ref|default:"-" }}</p>
+            <p><strong>DOI broj:</strong> {{ k.doi|default:"-" }}</p>
+            <hr>
+            {% endfor %}
+        {% else %}
+        <p>Nema unesenih kliničkih istraživanja.</p>
+        {% endif %}
+    </div>
+
+    <!-- Dodatne napomene -->
     <div class="section">
         <h2>Dodatne napomene</h2>
-        <p>{{ disclaimer }}</p>
+        <p>{{ disclaimer|default:"Nema dodatnih napomena." }}</p>
     </div>
-    {% endif %}
 
 </body>
 </html>
