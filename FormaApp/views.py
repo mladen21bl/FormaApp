@@ -4,23 +4,6 @@ from django.core.mail import EmailMessage, send_mail
 from django.template.loader import render_to_string
 from django.conf import settings
 
-def index(request):
-    if request.method == "POST":
-        form = StudentForm(request.POST)
-        if form.is_valid():
-            # Spremamo podatke u session
-            request.session["ime"] = form.cleaned_data["ime"]
-            request.session["prezime"] = form.cleaned_data["prezime"]
-            request.session["broj_indeksa"] = form.cleaned_data["broj_indeksa"]
-
-            # Preusmjeravanje na test.html
-            return redirect("test")  # "test" je ime URL-a koji pokazuje na test.html
-    else:
-        form = StudentForm()
-
-    return render(request, "FormaApp/index.html", {"form": form})
-
-
 
 def index(request):
     if request.method == "POST":
@@ -70,15 +53,26 @@ def test(request):
             "uvoznik": request.POST.get("uvoznik", ""),
             "distributer": request.POST.get("distributer", ""),
             "zemlja_porijekla": request.POST.get("zemlja_porijekla", ""),
-            "namena": request.POST.get("namena", ""),
-            "doza": request.POST.get("doza", ""),
-            "jedinica_doza": request.POST.get("jedinica_doza", ""),
-            "nacin_uzimanja": request.POST.get("nacin_uzimanja", ""),
-            "opis_uzimanja": request.POST.get("opis_uzimanja", ""),
-            "trajanje_primjene": request.POST.get("trajanje_primjene", ""),
             "all_ingredients": request.POST.get("all_ingredients", ""),
             "disclaimer": request.POST.get("disclaimer", ""),
             "nutrient_comment": request.POST.get("nutrient_comment", "")
+        }
+
+        # 3. Namena i način primjene
+        namena = request.POST.get("namena", "")
+        doza = request.POST.get("doza", "")
+        jedinica_doza = request.POST.get("jedinica_doza", "")
+        nacin_uzimanja = request.POST.get("nacin_uzimanja", "")
+        opis_uzimanja = request.POST.get("opis_uzimanja", "")
+        trajanje_primjene = request.POST.get("trajanje_primjene", "")
+
+        podaci["namena_i_primjena"] = {
+            "namena": namena,
+            "doza": doza,
+            "jedinica_doza": jedinica_doza,
+            "nacin_uzimanja": nacin_uzimanja,
+            "opis_uzimanja": opis_uzimanja,
+            "trajanje_primjene": trajanje_primjene,
         }
 
         # Dinamičke tabele: sastojci
@@ -107,40 +101,128 @@ def test(request):
             i += 1
         podaci["nutrienti"] = nutrienti
 
+        # 5. Ograničenja i upozorenja
+
+        ogranicenja = {
+            "djeca": bool(request.POST.get("ogranicenja_djeca")),
+            "trudnice": bool(request.POST.get("ogranicenja_trudnice")),
+            "dojilje": bool(request.POST.get("ogranicenja_dojilje")),
+            "hronicni": bool(request.POST.get("ogranicenja_hronicni")),
+        }
+
+        mjere_opreza = {
+            "djeca": bool(request.POST.get("mjera_djeca")),
+            "doziranje": bool(request.POST.get("mjera_doziranje")),
+            "zamjena_ishrana": bool(request.POST.get("mjera_zamjena")),
+            "obrok": bool(request.POST.get("mjera_obrok")),
+            "skladistenje": bool(request.POST.get("mjera_skladistenje")),
+        }
+
+        upozorenja = {
+            "alergije": bool(request.POST.get("upozorenje_alergije")),
+            "lijekovi": bool(request.POST.get("upozorenje_lijekovi")),
+            "gi": bool(request.POST.get("upozorenje_gi")),
+            "pritisak": bool(request.POST.get("upozorenje_pritisak")),
+            "secer": bool(request.POST.get("upozorenje_secer")),
+        }
+
+        disclaimer = request.POST.get("disclaimer", "")
+
+        podaci["ogranicenja_i_upozorenja"] = {
+            "ogranicenja": ogranicenja,
+            "mjere_opreza": mjere_opreza,
+            "upozorenja": upozorenja,
+            "disclaimer": disclaimer,
+        }
+
         # Dinamičke sekcije: biljna droga
         # Biljna droga
         biljne_droge = []
-        i = 0
-        while f"biljka_sr_{i}" in request.POST:
+
+        biljka_sr = request.POST.getlist("biljka_sr")
+        biljka_lat = request.POST.getlist("biljka_lat")
+        dio_biljke = request.POST.getlist("dio_biljke")
+        stanje_biljke = request.POST.getlist("stanje_biljke")
+        rastvarac = request.POST.getlist("rastvarac")
+        der = request.POST.getlist("der")
+        poruka = request.POST.getlist("poruka")
+
+        standard_proc = request.POST.getlist("standardizacija_proc")
+        standard_sup = request.POST.getlist("standardizacija_supstanca")
+
+        zemlja = request.POST.getlist("zemlja_porijekla")
+
+        kolicina = request.POST.getlist("kolicina_biljna")
+        jedinica = request.POST.getlist("jedinica_biljna")
+
+        for i in range(len(biljka_sr)):
+            # preskoči prazne unose
+            if not biljka_sr[i].strip() and not biljka_lat[i].strip():
+                continue
+
             biljne_droge.append({
-                "sr": request.POST.get(f"biljka_sr_{i}", ""),
-                "lat": request.POST.get(f"biljka_lat_{i}", ""),
-                "dio": request.POST.get(f"dio_biljke_{i}", ""),
-                "stanje": request.POST.get(f"stanje_biljke_{i}", ""),
-                "rastvarac": request.POST.get(f"rastvarac_{i}", ""),
-                "der": request.POST.get(f"der_{i}", ""),
-                "standardizacija_proc": request.POST.get(f"standardizacija_proc_{i}", ""),
-                "standardizacija_supstanca": request.POST.get(f"standardizacija_supstanca_{i}", ""),
-                "zemlja": request.POST.get(f"zemlja_porijekla_{i}", ""),
-                "kolicina": request.POST.get(f"kolicina_biljna_{i}", ""),
-                "jedinica": request.POST.get(f"jedinica_biljna_{i}", ""),
-                "poruka": request.POST.get(f"poruka_{i}", "")
+                "biljka_sr": biljka_sr[i],
+                "biljka_lat": biljka_lat[i] if i < len(biljka_lat) else "",
+                "dio_biljke": dio_biljke[i] if i < len(dio_biljke) else "",
+                "stanje": stanje_biljke[i] if i < len(stanje_biljke) else "",
+                "rastvarac": rastvarac[i] if i < len(rastvarac) else "",
+                "der": der[i] if i < len(der) else "",
+                "poruka": poruka[i] if i < len(poruka) else "",
+                "standard_proc": standard_proc[i] if i < len(standard_proc) else "",
+                "standard_sup": standard_sup[i] if i < len(standard_sup) else "",
+                "zemlja": zemlja[i] if i < len(zemlja) else "",
+                "kolicina": kolicina[i] if i < len(kolicina) else "",
+                "jedinica": jedinica[i] if i < len(jedinica) else ""
             })
-            i += 1
-        podaci["biljna_droga"] = biljne_droge
+
+        podaci["biljne_droge"] = biljne_droge
 
         # Aktivne supstance
-        aktivne = []
-        i = 0
-        while f"aktivna_naziv_{i}" in request.POST:
-            aktivne.append({
-                "naziv": request.POST.get(f"aktivna_naziv_{i}", ""),
-                "hemijski_oblik": request.POST.get(f"hemijski_oblik_{i}", ""),
-                "kolicina": request.POST.get(f"kolicina_aktivna_{i}", ""),
-                "jedinica": request.POST.get(f"jedinica_aktivna_{i}", "")
+        aktivne_supstance = []
+
+        nazivi = request.POST.getlist("aktivna_naziv")
+        oblici = request.POST.getlist("hemijski_oblik")
+        kolicine = request.POST.getlist("kolicina_aktivna")
+        jedinice = request.POST.getlist("jedinica_aktivna")
+
+        for i in range(len(nazivi)):
+            if nazivi[i].strip():  # preskoči prazne
+                aktivne_supstance.append({
+                    "naziv": nazivi[i],
+                    "hemijski_oblik": oblici[i] if i < len(oblici) else "",
+                    "kolicina": kolicine[i] if i < len(kolicine) else "",
+                    "jedinica": jedinice[i] if i < len(jedinice) else ""
+                })
+
+        podaci["aktivne_supstance"] = aktivne_supstance
+
+        # BSE/TSE i GMO
+        bse_status = request.POST.get("bse_status", "nije_potrebno")
+        bse_napomena = request.POST.get("bse_napomena", "")
+        podaci["bse_tse"] = {
+            "status": bse_status,
+            "napomena": bse_napomena
+        }
+
+        # Klinička istraživanja
+        studije = []
+
+        study_naziv = request.POST.getlist("study_naziv")
+        study_tip = request.POST.getlist("study_tip")
+        study_godina = request.POST.getlist("study_godina")
+        study_doi = request.POST.getlist("study_doi")
+
+        for i in range(len(study_naziv)):
+            if not study_naziv[i].strip():
+                continue  # preskoči prazne unose
+            studije.append({
+                "naziv": study_naziv[i],
+                "tip": study_tip[i] if i < len(study_tip) else "",
+                "godina": study_godina[i] if i < len(study_godina) else "",
+                "doi": study_doi[i] if i < len(study_doi) else ""
             })
-            i += 1
-        podaci["aktivne_supstance"] = aktivne
+
+        podaci["klinicke_studije"] = studije
 
         # Sastavljanje emaila koristeći template
         html_content = render_to_string("FormaApp/email_template.html", podaci)

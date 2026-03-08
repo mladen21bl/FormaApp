@@ -85,17 +85,39 @@
     <!-- Biljna droga -->
     <div class="section">
         <h2>Biljna droga</h2>
-        {% if biljna_droga %}
-            {% for b in biljna_droga %}
-            <p><strong>Naziv (SR / LAT):</strong> {{ b.sr|default:"-" }} / {{ b.lat|default:"-" }}</p>
-            <p><strong>Dio biljke:</strong> {{ b.dio|default:"-" }}</p>
-            <p><strong>Stanje biljke:</strong> {{ b.stanje|default:"-" }}</p>
-            <p><strong>Rastvarac / DER:</strong> {{ b.rastvarac|default:"-" }} / {{ b.der|default:"-" }}</p>
-            <p><strong>Standardizacija:</strong> {{ b.standardizacija_proc|default:"-" }}% {{ b.standardizacija_supstanca|default:"-" }}</p>
-            <p><strong>Zemlja porijekla / Količina / Jedinica:</strong> {{ b.zemlja|default:"-" }} / {{ b.kolicina|default:"-" }} {{ b.jedinica|default:"-" }}</p>
-            <p><strong>Poruka:</strong> {{ b.poruka|default:"-" }}</p>
-            <hr>
-            {% endfor %}
+        {% if biljne_droge %}
+        <ul>
+        {% for b in biljne_droge %}
+        <li>
+
+        <strong>{{ b.biljka_sr }}</strong>
+        {% if b.biljka_lat %} ({{ b.biljka_lat }}){% endif %}<br>
+
+        Dio biljke: {{ b.dio_biljke|default:"-" }}<br>
+        Priprema: {{ b.stanje|default:"-" }}<br>
+        Rastvarač: {{ b.rastvarac|default:"-" }}<br>
+
+        {% if b.der %}
+        DER: {{ b.der }}<br>
+        {% endif %}
+
+        {% if b.standard_proc %}
+        Standardizacija: {{ b.standard_proc }} % {{ b.standard_sup }}<br>
+        {% endif %}
+
+        Porijeklo: {{ b.zemlja|default:"-" }}<br>
+
+        Količina: {{ b.kolicina }} {{ b.jedinica }}<br>
+
+        {% if b.poruka %}
+        Napomena: {{ b.poruka }}
+        {% endif %}
+
+        </li>
+        <br>
+        {% endfor %}
+        </ul>
+
         {% else %}
         <p>Nema unesenih biljnih droga.</p>
         {% endif %}
@@ -105,22 +127,17 @@
     <div class="section">
         <h2>Aktivne supstance</h2>
         {% if aktivne_supstance %}
-        <table>
-            <tr>
-                <th>Naziv</th>
-                <th>Hemijski oblik</th>
-                <th>Količina</th>
-                <th>Jedinica</th>
-            </tr>
-            {% for a in aktivne_supstance %}
-            <tr>
-                <td>{{ a.naziv|default:"-" }}</td>
-                <td>{{ a.hemijski_oblik|default:"-" }}</td>
-                <td>{{ a.kolicina|default:"-" }}</td>
-                <td>{{ a.jedinica|default:"-" }}</td>
-            </tr>
-            {% endfor %}
-        </table>
+        <ul>
+        {% for a in aktivne_supstance %}
+        <li>
+        <strong>{{ a.naziv }}</strong> –
+        {{ a.kolicina }} {{ a.jedinica }}
+        {% if a.hemijski_oblik %}
+        ({{ a.hemijski_oblik }})
+        {% endif %}
+        </li>
+        {% endfor %}
+        </ul>
         {% else %}
         <p>Nema unesenih aktivnih supstanci.</p>
         {% endif %}
@@ -129,66 +146,68 @@
     <!-- Namena i način primjene -->
     <div class="section">
         <h2>Namena i način primjene</h2>
-        <p><strong>Namena:</strong> {{ namena|default:"-" }}</p>
-        <p><strong>Preporučena dnevna doza:</strong> {{ preporucena_dozacija|default:"-" }} {{ jedinica_doza_namena|default:"" }}</p>
-        <p><strong>Način primjene:</strong> {{ nacin_primjene|default:"-" }}</p>
-        <p><strong>Detaljan opis načina primjene:</strong> {{ opis_nacin_primjene|default:"-" }}</p>
-        <p><strong>Trajanje primjene / ograničenje trajanja:</strong> {{ trajanje_primjene|default:"-" }}</p>
+        <p><strong>Namena i način primjene:</strong></p>
+        <p>Zdravstvena izjava: {{ namena_i_primjena.namena|default:"-" }}</p>
+        <p>Preporučena doza: {{ namena_i_primjena.doza|default:"-" }} {{ namena_i_primjena.jedinica_doza|default:"" }}</p>
+        <p>Način primjene: {{ namena_i_primjena.nacin_uzimanja|default:"-" }}</p>
+        <p>Detaljan opis: {{ namena_i_primjena.opis_uzimanja|default:"-" }}</p>
+        <p>Trajanje primjene: {{ namena_i_primjena.trajanje_primjene|default:"-" }}</p>
     </div>
 
     <!-- Ograničenja i upozorenja -->
     <div class="section">
         <h2>Ograničenja i upozorenja</h2>
-        <p><strong>Postoje ograničenja upotrebe:</strong></p>
+        <p><strong>Ograničenja upotrebe:</strong></p>
         <ul>
-            {% if ogr_limit_djeca == "Da" %}<li>Djeca</li>{% endif %}
-            {% if ogr_limit_trudnice == "Da" %}<li>Trudnice</li>{% endif %}
-            {% if ogr_limit_dojilje == "Da" %}<li>Dojilje</li>{% endif %}
-            {% if ogr_limit_hronicni == "Da" %}<li>Hronični pacijenti</li>{% endif %}
-            {% if ogr_limit_djeca != "Da" and ogr_limit_trudnice != "Da" and ogr_limit_dojilje != "Da" and ogr_limit_hronicni != "Da" %}
-                <li>Nema ograničenja</li>
-            {% endif %}
+        {% for k, v in ogranicenja_i_upozorenja.ogranicenja.items %}
+        {% if v %}<li>{{ k|capfirst }}</li>{% endif %}
+        {% endfor %}
         </ul>
 
         <p><strong>Mjere opreza:</strong></p>
-        {% if mjere_opreza %}
-        <ul>{% for m in mjere_opreza %}<li>{{ m|default:"-" }}</li>{% endfor %}</ul>
-        {% else %}
-        <p>Nema unesenih mjera opreza.</p>
-        {% endif %}
+        <ul>
+        {% for k, v in ogranicenja_i_upozorenja.mjere_opreza.items %}
+        {% if v %}<li>{{ k|capfirst }}</li>{% endif %}
+        {% endfor %}
+        </ul>
 
         <p><strong>Upozorenja:</strong></p>
-        {% if upozorenja %}
-        <ul>{% for u in upozorenja %}<li>{{ u|default:"-" }}</li>{% endfor %}</ul>
-        {% else %}
-        <p>Nema unesenih upozorenja.</p>
-        {% endif %}
+        <ul>
+        {% for k, v in ogranicenja_i_upozorenja.upozorenja.items %}
+        {% if v %}<li>{{ k|capfirst }}</li>{% endif %}
+        {% endfor %}
+        </ul>
 
-        <p><strong>Napomene i upozorenja:</strong> {{ napomene_upozorenja|default:"-" }}</p>
+        <p><strong>Napomene i upozorenja:</strong></p>
+        <p>{{ ogranicenja_i_upozorenja.disclaimer|default:"-" }}</p>
     </div>
 
     <!-- Sertifikati BSE/TSE i GMO -->
-    <div class="section">
-        <h2>Sertifikati BSE/TSE i GMO</h2>
-        <p><strong>Stanje sertifikata:</strong> {{ sertifikat_bse_tse|default:"-" }}</p>
-        <p><strong>Napomena / naziv dokumenta:</strong> {{ napomena_sertifikat|default:"-" }}</p>
-    </div>
+    <!-- BSE/TSE -->
+    <p><strong>BSE/TSE i GMO:</strong></p>
+    <p>Status: {{ bse_tse.status }}</p>
+    {% if bse_tse.napomena %}
+    <p>Napomena: {{ bse_tse.napomena }}</p>
+    {% endif %}
 
-    <!-- Klinička istraživanja i naučni dokazi -->
-    <div class="section">
-        <h2>Klinička istraživanja i naučni dokazi</h2>
-        {% if klin_istrazivanja %}
-            {% for k in klin_istrazivanja %}
-            <p><strong>Naziv studije:</strong> {{ k.naziv|default:"-" }}</p>
-            <p><strong>Tip studije:</strong> {{ k.tip|default:"-" }}</p>
-            <p><strong>Godina / referenca:</strong> {{ k.godina_ref|default:"-" }}</p>
-            <p><strong>DOI broj:</strong> {{ k.doi|default:"-" }}</p>
-            <hr>
-            {% endfor %}
-        {% else %}
-        <p>Nema unesenih kliničkih istraživanja.</p>
-        {% endif %}
-    </div>
+    <hr>
+
+    <!-- Kliničke studije -->
+    {% if klinicke_studije %}
+    <p><strong>Kliničke studije:</strong></p>
+    <ul>
+    {% for s in klinicke_studije %}
+    <li>
+    <strong>{{ s.naziv }}</strong><br>
+    Tip: {{ s.tip|default:"-" }}<br>
+    Godina / referenca: {{ s.godina|default:"-" }}<br>
+    {% if s.doi %}DOI: {{ s.doi }}{% endif %}
+    </li>
+    {% endfor %}
+    </ul>
+    {% else %}
+    <p>Nema unesenih studija.</p>
+    {% endif %}
 
     <!-- Dodatne napomene -->
     <div class="section">
