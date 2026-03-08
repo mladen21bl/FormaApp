@@ -52,7 +52,7 @@ def test(request):
             "proizvodjac": request.POST.get("proizvodjac", ""),
             "uvoznik": request.POST.get("uvoznik", ""),
             "distributer": request.POST.get("distributer", ""),
-            "zemlja_porijekla": request.POST.get("zemlja_porijekla", ""),
+            "porijeklo": request.POST.get("porijeklo", ""),
             "all_ingredients": request.POST.get("all_ingredients", ""),
             "disclaimer": request.POST.get("disclaimer", ""),
             "nutrient_comment": request.POST.get("nutrient_comment", "")

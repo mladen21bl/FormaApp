@@ -5,6 +5,7 @@
     <title>Prijava dodatka prehrani</title>
     <style>
         body { font-family: Arial, sans-serif; line-height: 1.5; color: #333; }
+        h1 { color: #2a7ae2; }
         h2 { color: #2a7ae2; border-bottom: 1px solid #ccc; padding-bottom: 5px; }
         table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
         th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
@@ -13,207 +14,198 @@
     </style>
 </head>
 <body>
-    <h1>Prijava dodatka prehrani</h1>
 
-    <!-- Osnovni podaci -->
-    <div class="section">
-        <h2>Osnovni podaci</h2>
-        <p><strong>Ime i prezime:</strong> {{ ime }} {{ prezime }}</p>
-        <p><strong>Broj indeksa:</strong> {{ broj_indeksa }}</p>
-        <p><strong>Naziv proizvoda:</strong> {{ naziv|default:"-" }}</p>
-        <p><strong>Oblik proizvoda:</strong> {{ oblik|default:"-" }}</p>
-        <p><strong>Neto količina:</strong> {{ neto_kolicina|default:"-" }} {{ jedinica_kolicina|default:"" }}</p>
-        <p><strong>Tip ambalaže:</strong> {{ tip_ambalaze|default:"-" }} / <strong>Materijal:</strong> {{ materijal_ambalaze|default:"-" }}</p>
-        <p><strong>Čuvati zaštićeno od svjetlosti:</strong> {{ cuva_od_svjetlosti|default:"Ne" }}</p>
-        <p><strong>Čuvati zaštićeno od vlage:</strong> {{ cuva_od_vlage|default:"Ne" }}</p>
-        <p><strong>Temperatura skladištenja:</strong> {{ temp_min|default:"-" }} - {{ temp_max|default:"-" }} °C</p>
-        <p><strong>Serija / Rok trajanja:</strong> {{ serija|default:"-" }} / {{ rok_trajanja|default:"-" }}</p>
-        <p><strong>Proizvođač / Uvoznik / Distributer:</strong> {{ proizvodjac|default:"-" }} / {{ uvoznik|default:"-" }} / {{ distributer|default:"-" }}</p>
-        <p><strong>Zemlja porijekla:</strong> {{ zemlja_porijekla|default:"-" }}</p>
-    </div>
+<h1>Prijava za registraciju dodatka prehrani: {{ naziv_proizvoda|default:"-" }}</h1>
+<p>Simulacija postupka prijave – nastava iz farmakognozije</p>
 
-    <!-- Sastojci -->
-    <div class="section">
-        <h2>Sastojci</h2>
-        {% if sastojci %}
-        <table>
-            <tr>
-                <th>Naziv</th>
-                <th>Količina doza</th>
-                <th>% NRV</th>
-                <th>Na 100g</th>
-            </tr>
-            {% for s in sastojci %}
-            <tr>
-                <td>{{ s.naziv|default:"-" }}</td>
-                <td>{{ s.kolicina_doz|default:"-" }}</td>
-                <td>{{ s.percent_nrv|default:"-" }}</td>
-                <td>{{ s.na_100g|default:"-" }}</td>
-            </tr>
-            {% endfor %}
-        </table>
-        {% else %}
-        <p>Nema unesenih sastojaka.</p>
-        {% endif %}
-    </div>
+<!-- Podaci studenta -->
+<div class="section">
+    <h2>Podaci studenta</h2>
+    <p><strong>Ime:</strong> {{ ime|default:"-" }}</p>
+    <p><strong>Prezime:</strong> {{ prezime|default:"-" }}</p>
+    <p><strong>Broj indeksa:</strong> {{ broj_indeksa|default:"-" }}</p>
+</div>
 
-    <!-- Nutritivna vrijednost -->
-    <div class="section">
-        <h2>Nutritivna vrijednost</h2>
-        {% if nutrienti %}
-        <table>
-            <tr>
-                <th>Naziv</th>
-                <th>Količina doza</th>
-                <th>% NRV</th>
-                <th>Na 100g</th>
-            </tr>
-            {% for n in nutrienti %}
-            <tr>
-                <td>{{ n.naziv|default:"-" }}</td>
-                <td>{{ n.kolicina_doz|default:"-" }}</td>
-                <td>{{ n.percent_nrv|default:"-" }}</td>
-                <td>{{ n.na_100g|default:"-" }}</td>
-            </tr>
-            {% endfor %}
-        </table>
-        {% else %}
-        <p>Nema unesenih nutritivnih vrijednosti.</p>
-        {% endif %}
-    </div>
+<!-- 1. Osnovni podaci o proizvodu -->
+<div class="section">
+    <h2>1. Osnovni podaci o proizvodu</h2>
+    <p><strong>Komercijalni naziv proizvoda:</strong> {{ naziv|default:"-" }}</p>
+    <p><strong>Farmaceutski oblik:</strong> {{ oblik|default:"-" }}</p>
+    <p><strong>Neto količina pakovanja:</strong> {{ neto_kolicina|default:"-" }} {{ jedinica_kolicina|default:"" }}</p>
+</div>
 
-    <!-- Biljna droga -->
-    <div class="section">
-        <h2>Biljna droga</h2>
-        {% if biljne_droge %}
-        <ul>
-        {% for b in biljne_droge %}
+<!-- 2. Ambalaža i uslovi čuvanja -->
+<div class="section">
+    <h2>2. Ambalaža i uslovi čuvanja</h2>
+    <p><strong>Tip ambalaže:</strong> {{ tip_ambalaze|default:"-" }}</p>
+    <p><strong>Materijal ambalaže:</strong> {{ materijal_ambalaze|default:"-" }}</p>
+    <p><strong>Minimalna temperatura čuvanja (°C):</strong> {{ temp_min|default:"-" }}</p>
+    <p><strong>Maksimalna temperatura čuvanja (°C):</strong> {{ temp_max|default:"-" }}</p>
+    <p><strong>Čuvanje:</strong></p>
+    <ul>
+        <li>Čuvati zaštićeno od svjetlosti: {{ cuva_od_svjetlosti|default:"Ne" }}</li>
+        <li>Čuvati zaštićeno od vlage: {{ cuva_od_vlage|default:"Ne" }}</li>
+    </ul>
+    <p><strong>Serija proizvoda:</strong> {{ serija|default:"-" }}</p>
+    <p><strong>Rok trajanja:</strong> {{ rok_trajanja|default:"-" }}</p>
+    <p><strong>Proizvođač / Uvoznik / Distributer:</strong> {{ proizvodjac|default:"-" }} / {{ uvoznik|default:"-" }} / {{ distributer|default:"-" }}</p>
+    <p><strong>Zemlja porijekla:</strong> {{ porijeklo|default:"-" }}</p>
+</div>
+
+<!-- 3. Namena i način primjene -->
+<div class="section">
+    <h2>3. Namena i način primjene</h2>
+    <p><strong>Zdravstvena izjava:</strong> {{ namena_i_primjena.namena|default:"-" }}</p>
+    <p><strong>Preporučena dnevna doza:</strong> {{ namena_i_primjena.doza|default:"-" }} {{ namena_i_primjena.jedinica_doza|default:"" }}</p>
+    <p><strong>Način primjene:</strong> {{ namena_i_primjena.nacin_uzimanja|default:"-" }}</p>
+    <p><strong>Detaljan opis:</strong> {{ namena_i_primjena.opis_uzimanja|default:"-" }}</p>
+    <p><strong>Trajanje primjene:</strong> {{ namena_i_primjena.trajanje_primjene|default:"-" }}</p>
+</div>
+
+<!-- 4. Aktivni sastojci -->
+<div class="section">
+    <h2>4. Aktivni sastojci</h2>
+    {% if sastojci %}
+    <table>
+        <tr>
+            <th>Naziv</th>
+            <th>Količina doza</th>
+            <th>% NRV</th>
+            <th>Na 100g</th>
+        </tr>
+        {% for s in sastojci %}
+        <tr>
+            <td>{{ s.naziv|default:"-" }}</td>
+            <td>{{ s.kolicina_doz|default:"-" }}</td>
+            <td>{{ s.percent_nrv|default:"-" }}</td>
+            <td>{{ s.na_100g|default:"-" }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p>Nema unesenih aktivnih sastojaka.</p>
+    {% endif %}
+</div>
+
+<!-- 5. Ograničenja i upozorenja -->
+<div class="section">
+    <h2>5. Ograničenja i upozorenja</h2>
+    <p><strong>Postoje ograničenja upotrebe:</strong></p>
+    <ul>
+        {% for k, v in ogranicenja_i_upozorenja.ogranicenja.items %}
+            {% if v %}<li>{{ k|capfirst }}</li>{% endif %}
+        {% endfor %}
+    </ul>
+    <p><strong>Mjere opreza:</strong></p>
+    <ul>
+        {% for k, v in ogranicenja_i_upozorenja.mjere_opreza.items %}
+            {% if v %}<li>{{ k|capfirst }}</li>{% endif %}
+        {% endfor %}
+    </ul>
+    <p><strong>Upozorenja:</strong></p>
+    <ul>
+        {% for k, v in ogranicenja_i_upozorenja.upozorenja.items %}
+            {% if v %}<li>{{ k|capfirst }}</li>{% endif %}
+        {% endfor %}
+    </ul>
+    <p><strong>Napomene i upozorenja:</strong> {{ ogranicenja_i_upozorenja.disclaimer|default:"-" }}</p>
+</div>
+
+<!-- 6. Biljna droga -->
+<div class="section">
+    <h2>6. Biljna droga</h2>
+    {% if biljne_droge %}
+    <ul>
+    {% for b in biljne_droge %}
         <li>
-
-        <strong>{{ b.biljka_sr }}</strong>
-        {% if b.biljka_lat %} ({{ b.biljka_lat }}){% endif %}<br>
-
+        <strong>{{ b.biljka_sr }}</strong>{% if b.biljka_lat %} ({{ b.biljka_lat }}){% endif %}<br>
         Dio biljke: {{ b.dio_biljke|default:"-" }}<br>
         Priprema: {{ b.stanje|default:"-" }}<br>
-        Rastvarač: {{ b.rastvarac|default:"-" }}<br>
-
-        {% if b.der %}
-        DER: {{ b.der }}<br>
-        {% endif %}
-
-        {% if b.standard_proc %}
-        Standardizacija: {{ b.standard_proc }} % {{ b.standard_sup }}<br>
-        {% endif %}
-
+        Tip ekstrakta / rastvarač: {{ b.rastvarac|default:"-" }}<br>
+        {% if b.der %}DER: {{ b.der }}<br>{% endif %}
+        {% if b.standard_proc %}Standardizacija: {{ b.standard_proc }} % {{ b.standard_sup }}<br>{% endif %}
         Porijeklo: {{ b.zemlja|default:"-" }}<br>
-
         Količina: {{ b.kolicina }} {{ b.jedinica }}<br>
-
-        {% if b.poruka %}
-        Napomena: {{ b.poruka }}
-        {% endif %}
-
+        {% if b.poruka %}Napomena: {{ b.poruka }}{% endif %}
         </li>
         <br>
+    {% endfor %}
+    </ul>
+    {% else %}
+    <p>Nema unesenih biljnih droga.</p>
+    {% endif %}
+</div>
+
+<!-- 7. Aktivne supstance --> 
+<div class="section"> 
+    <h2>7. Aktivne supstance</h2> 
+    {% if aktivne_supstance %} 
+    <ul style="list-style-type:none; padding-left:0;">
+        {% for a in aktivne_supstance %} 
+        <li style="margin-bottom:10px; border-bottom:1px solid #ccc; padding-bottom:5px;">
+            <p><strong>Naziv:</strong> {{ a.naziv }}</p>
+            {% if a.hemijski_oblik %}
+            <p><strong>Hemijski oblik:</strong> {{ a.hemijski_oblik }}</p>
+            {% endif %}
+            <p><strong>Količina:</strong> {{ a.kolicina }} {{ a.jedinica }}</p>
+        </li> 
+        {% endfor %} 
+    </ul> 
+    {% else %} 
+    <p>Nema unesenih aktivnih supstanci.</p> 
+    {% endif %} 
+</div>
+
+<!-- 8. Energetsko-nutritivna tabela -->
+<div class="section">
+    <h2>8. Energetsko-nutritivna tabela</h2>
+    {% if nutrienti %}
+    <table>
+        <tr>
+            <th>Naziv nutritivne vrijednosti</th>
+            <th>Količina u dnevnoj dozi</th>
+            <th>% NRV*</th>
+            <th>Količina na 100 g</th>
+        </tr>
+        {% for n in nutrienti %}
+        <tr>
+            <td>{{ n.naziv|default:"-" }}</td>
+            <td>{{ n.kolicina_doz|default:"-" }}</td>
+            <td>{{ n.percent_nrv|default:"-" }}</td>
+            <td>{{ n.na_100g|default:"-" }}</td>
+        </tr>
         {% endfor %}
-        </ul>
+    </table>
+    {% else %}
+    <p>{{ komentar_nutritivna|default:"Nema unesenih nutritivnih vrijednosti." }}</p>
+    {% endif %}
+</div>
 
-        {% else %}
-        <p>Nema unesenih biljnih droga.</p>
-        {% endif %}
-    </div>
+<!-- 9. Sertifikati BSE/TSE i GMO -->
+<div class="section">
+    <h2>9. Sertifikati BSE/TSE i GMO</h2>
+    <p>Status: {{ bse_tse.status|default:"Nije potrebno" }}</p>
+    {% if bse_tse.napomena %}<p>Napomena: {{ bse_tse.napomena }}</p>{% endif %}
+</div>
 
-    <!-- Aktivne supstance -->
-    <div class="section">
-        <h2>Aktivne supstance</h2>
-        {% if aktivne_supstance %}
-        <ul>
-        {% for a in aktivne_supstance %}
+<!-- 10. Klinička istraživanja i naučni dokazi -->
+<div class="section">
+    <h2>10. Klinička istraživanja i naučni dokazi</h2>
+    {% if klinicke_studije %}
+    <ul>
+        {% for s in klinicke_studije %}
         <li>
-        <strong>{{ a.naziv }}</strong> –
-        {{ a.kolicina }} {{ a.jedinica }}
-        {% if a.hemijski_oblik %}
-        ({{ a.hemijski_oblik }})
-        {% endif %}
+        <strong>{{ s.naziv }}</strong><br>
+        Tip studije: {{ s.tip|default:"-" }}<br>
+        Godina / referenca: {{ s.godina|default:"-" }}<br>
+        {% if s.doi %}DOI: {{ s.doi }}{% endif %}
         </li>
         {% endfor %}
-        </ul>
-        {% else %}
-        <p>Nema unesenih aktivnih supstanci.</p>
-        {% endif %}
-    </div>
-
-    <!-- Namena i način primjene -->
-    <div class="section">
-        <h2>Namena i način primjene</h2>
-        <p><strong>Namena i način primjene:</strong></p>
-        <p>Zdravstvena izjava: {{ namena_i_primjena.namena|default:"-" }}</p>
-        <p>Preporučena doza: {{ namena_i_primjena.doza|default:"-" }} {{ namena_i_primjena.jedinica_doza|default:"" }}</p>
-        <p>Način primjene: {{ namena_i_primjena.nacin_uzimanja|default:"-" }}</p>
-        <p>Detaljan opis: {{ namena_i_primjena.opis_uzimanja|default:"-" }}</p>
-        <p>Trajanje primjene: {{ namena_i_primjena.trajanje_primjene|default:"-" }}</p>
-    </div>
-
-    <!-- Ograničenja i upozorenja -->
-    <div class="section">
-        <h2>Ograničenja i upozorenja</h2>
-        <p><strong>Ograničenja upotrebe:</strong></p>
-        <ul>
-        {% for k, v in ogranicenja_i_upozorenja.ogranicenja.items %}
-        {% if v %}<li>{{ k|capfirst }}</li>{% endif %}
-        {% endfor %}
-        </ul>
-
-        <p><strong>Mjere opreza:</strong></p>
-        <ul>
-        {% for k, v in ogranicenja_i_upozorenja.mjere_opreza.items %}
-        {% if v %}<li>{{ k|capfirst }}</li>{% endif %}
-        {% endfor %}
-        </ul>
-
-        <p><strong>Upozorenja:</strong></p>
-        <ul>
-        {% for k, v in ogranicenja_i_upozorenja.upozorenja.items %}
-        {% if v %}<li>{{ k|capfirst }}</li>{% endif %}
-        {% endfor %}
-        </ul>
-
-        <p><strong>Napomene i upozorenja:</strong></p>
-        <p>{{ ogranicenja_i_upozorenja.disclaimer|default:"-" }}</p>
-    </div>
-
-    <!-- Sertifikati BSE/TSE i GMO -->
-    <!-- BSE/TSE -->
-    <p><strong>BSE/TSE i GMO:</strong></p>
-    <p>Status: {{ bse_tse.status }}</p>
-    {% if bse_tse.napomena %}
-    <p>Napomena: {{ bse_tse.napomena }}</p>
-    {% endif %}
-
-    <hr>
-
-    <!-- Kliničke studije -->
-    {% if klinicke_studije %}
-    <p><strong>Kliničke studije:</strong></p>
-    <ul>
-    {% for s in klinicke_studije %}
-    <li>
-    <strong>{{ s.naziv }}</strong><br>
-    Tip: {{ s.tip|default:"-" }}<br>
-    Godina / referenca: {{ s.godina|default:"-" }}<br>
-    {% if s.doi %}DOI: {{ s.doi }}{% endif %}
-    </li>
-    {% endfor %}
     </ul>
     {% else %}
     <p>Nema unesenih studija.</p>
     {% endif %}
-
-    <!-- Dodatne napomene -->
-    <div class="section">
-        <h2>Dodatne napomene</h2>
-        <p>{{ disclaimer|default:"Nema dodatnih napomena." }}</p>
-    </div>
+</div>
 
 </body>
 </html>
