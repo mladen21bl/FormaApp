@@ -3,10 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <title>Uspjeh</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 30px 40px;
+            border-radius: 8px;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+
+        h2 {
+            color: #2a7ae2;
+            margin-bottom: 20px;
+        }
+
+        p {
+            margin-bottom: 25px;
+            font-size: 16px;
+        }
+
+        a.button {
+            display: inline-block;
+            text-decoration: none;
+            background-color: #2a7ae2;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        a.button:hover {
+            background-color: #1f5bb5;
+        }
+    </style>
 </head>
 <body>
-    <h2>Uspješno poslano!</h2>
-    <p>Vaš obrazac je uspješno poslan profesoru.</p>
-    <a href="{% url 'index' %}">Nazad na početak</a>
+    <div class="container">
+        <h2>Uspješno poslano!</h2>
+        <p>Vaš obrazac je uspješno poslan profesoru.</p>
+        <a href="{% url 'index' %}" class="button">Nazad na početak</a>
+    </div>
 </body>
 </html>

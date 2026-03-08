@@ -40,11 +40,11 @@ input.warning { border-color: orange; background-color: #fff4cc; }
 <div class="subtitle">Simulacija postupka prijave – nastava iz farmakognozije</div>
 
 <!-- PODACI STUDENTA -->
-<fieldset>
-<legend>Podaci studenta</legend>
-<p>Ime: <input type="text" name="ime_studenta" value="{{ ime|default:'' }}" readonly></p>
-<p>Prezime: <input type="text" name="prezime_studenta" value="{{ prezime|default:'' }}" readonly></p>
-<p>Broj indeksa: <input type="text" name="broj_indeksa" value="{{ broj_indeksa|default:'' }}" readonly></p>
+<fieldset style="border:1px solid #ccc; border-radius:8px; padding:15px;">
+    <legend style="font-weight:bold; color:#0e0f0f;">Podaci studenta</legend>
+    <p><strong>Ime:</strong> {{ ime|default:"-" }}</p>
+    <p><strong>Prezime:</strong> {{ prezime|default:"-" }}</p>
+    <p><strong>Broj indeksa:</strong> {{ broj_indeksa|default:"-" }}</p>
 </fieldset>
 
 <form id="prijavaForm" method="POST" action="{% url 'test' %}" novalidate>

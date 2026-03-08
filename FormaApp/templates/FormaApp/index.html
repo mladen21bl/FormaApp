@@ -1,32 +1,82 @@
 <!DOCTYPE html>
-<html>
+<html lang="hr">
 <head>
+    <meta charset="UTF-8">
     <title>Test prijava</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; /* puni ekran visine */
+            margin: 0;
+        }
+
+        form {
+            background-color: #fff;
+            padding: 20px 30px;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+
+        h2 {
+            color: #2a7ae2;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 8px 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #2a7ae2;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #1f5bb5;
+        }
+    </style>
 </head>
 <body>
 
-<h2>Unesite podatke</h2>
-
 <form method="post">
+    <h2>Unesite podatke</h2>
     {% csrf_token %}
 
-    <label>Ime:</label>
+    <label for="id_ime">Ime:</label>
     {{ form.ime }}
 
-    <br><br>
-
-    <label>Prezime:</label>
+    <label for="id_prezime">Prezime:</label>
     {{ form.prezime }}
 
-    <br><br>
-
-    <label>Broj indeksa:</label>
+    <label for="id_broj_indeksa">Broj indeksa:</label>
     {{ form.broj_indeksa }}
 
-    <br><br>
-
     <button type="submit">Pošalji</button>
-
 </form>
 
 </body>
