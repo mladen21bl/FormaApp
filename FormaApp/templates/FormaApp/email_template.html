@@ -185,7 +185,12 @@
     <p>Status: {{ bse_tse.status|default:"Nije potrebno" }}</p>
     {% if bse_tse.napomena %}<p>Napomena: {{ bse_tse.napomena }}</p>{% endif %}
     {% if bse_file_names %}
-    <p>Priloženi fajlovi: {{ bse_file_names|join:", " }}</p>
+    <p>Priloženi fajlovi:</p>
+    <ul>
+        {% for f in bse_file_names %}
+        <li>{{ f }}</li>
+        {% endfor %}
+    </ul>
     {% endif %}
 </div>
 
