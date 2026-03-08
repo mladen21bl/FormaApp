@@ -36,7 +36,7 @@ input.warning { border-color: orange; background-color: #fff4cc; }
 </head>
 <body>
 <div class="container">
-<h1>Prijava za registraciju dodatka prehrani test 2</h1>
+<h1>Prijava za registraciju biljnih dodatka prehrani</h1>
 <div class="subtitle">Simulacija postupka prijave – nastava iz farmakognozije</div>
 
 <!-- PODACI STUDENTA -->
@@ -47,8 +47,8 @@ input.warning { border-color: orange; background-color: #fff4cc; }
     <p><strong>Broj indeksa:</strong> {{ broj_indeksa|default:"-" }}</p>
 </fieldset>
 
-<form id="prijavaForm" method="POST" action="{% url 'test' %}" novalidate>
-{% csrf_token %}
+<form id="prijavaForm" method="POST" action="{% url 'test' %}" enctype="multipart/form-data" novalidate>
+    {% csrf_token %}
 
 <!-- 1. Osnovni podaci o proizvodu -->
 <fieldset>
@@ -572,43 +572,36 @@ function addNutrientRow() {
 </fieldset>
 
 <!-- 9. BSE/TSE -->
-<fieldset>
-<legend>9. Sertifikati BSE/TSE i GMO</legend>
+<fieldset style="border:1px solid #ccc; border-radius:8px; padding:15px; margin-top:20px;">
+    <legend style="font-weight:bold; color:#2a7ae2;">9. Sertifikati BSE/TSE i GMO</legend>
 
-<p>
-Unesite informacije o BSE/TSE i GMO samo ako proizvod sadrži životinjske komponente ili genetski modifikovane sastojke. 
-Ako proizvod ne sadrži ove komponente, možete ostaviti opciju “Nije potrebno” i polje za napomenu prazno.
-</p>
+    <p>
+        Unesite informacije o BSE/TSE i GMO samo ako proizvod sadrži životinjske komponente 
+        ili genetski modifikovane sastojke. Ako proizvod ne sadrži ove komponente, 
+        možete ostaviti opciju “Nije potrebno”.
+    </p>
 
-<div class="card">
+    <div class="card" style="padding:10px; border:1px solid #eee; border-radius:6px; margin-bottom:10px;">
 
-<p>Stanje sertifikata:</p>
+        <p><strong>Stanje sertifikata:</strong></p>
 
-<div class="flex-row">
-<label>
-<input type="radio" name="bse_status" value="nije_potrebno"> Nije potrebno
-</label>
+        <div class="flex-row" style="display:flex; gap:15px; margin-bottom:10px;">
+            <label>
+                <input type="radio" name="bse_status" value="nije_potrebno" checked> Nije potrebno
+            </label>
+            <label>
+                <input type="radio" name="bse_status" value="prilozeno"> Priloženo
+            </label>
+        </div>
 
-<label>
-<input type="radio" name="bse_status" value="prilozeno"> Priloženo
-</label>
-</div>
+        <div>
+            <p><strong>Priloži dokument(e):</strong></p>
+            <!-- OVAJ INPUT RADI SAMO AKO FORMA IMA enctype="multipart/form-data" -->
+            <input type="file" name="bse_file" accept=".pdf,.doc,.docx,.jpg,.png" multiple style="padding:5px; width:100%;">
+            <small style="color:#555;">Možete odabrati više fajlova odjednom.</small>
+        </div>
 
-<div id="bse_details">
-
-<p>Napomena / naziv dokumenta (BSE/TSE ili GMO):<br>
-
-<input
-type="text"
-name="bse_napomena"
-placeholder="Unesite naziv dokumenta ili komentar">
-
-</p>
-
-</div>
-
-</div>
-
+    </div>
 </fieldset>
 
 

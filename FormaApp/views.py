@@ -198,44 +198,42 @@ def test(request):
 
         # BSE/TSE i GMO
         bse_status = request.POST.get("bse_status", "nije_potrebno")
-        bse_napomena = request.POST.get("bse_napomena", "")
-        podaci["bse_tse"] = {
-            "status": bse_status,
-            "napomena": bse_napomena
-        }
+        podaci["bse_tse"] = {"status": bse_status}
+        bse_files = request.FILES.getlist("bse_file")
+        podaci["bse_file_names"] = [f.name for f in bse_files]
 
-        # Klinička istraživanja
+        # 8. Kliničke studije (isto kao ranije)
         studije = []
-
         study_naziv = request.POST.getlist("study_naziv")
         study_tip = request.POST.getlist("study_tip")
         study_godina = request.POST.getlist("study_godina")
         study_doi = request.POST.getlist("study_doi")
-
         for i in range(len(study_naziv)):
             if not study_naziv[i].strip():
-                continue  # preskoči prazne unose
+                continue
             studije.append({
                 "naziv": study_naziv[i],
                 "tip": study_tip[i] if i < len(study_tip) else "",
                 "godina": study_godina[i] if i < len(study_godina) else "",
                 "doi": study_doi[i] if i < len(study_doi) else ""
             })
-
         podaci["klinicke_studije"] = studije
 
-        # Sastavljanje emaila koristeći template
+        # 9. Slanje mejla JEDNOM
         html_content = render_to_string("FormaApp/email_template.html", podaci)
         email = EmailMessage(
             subject=f"Prijava dodatka prehrani - {ime} {prezime}",
             body=html_content,
-            from_email=settings.CENTRAL_EMAIL,        # tvoj centralni mejl
-            to=[settings.PROFESOR_EMAIL],             # testni “profesorov” mejl
+            from_email=settings.CENTRAL_EMAIL,
+            to=[settings.PROFESOR_EMAIL],
         )
-        email.content_subtype = "html"  # omogućava HTML
+        email.content_subtype = "html"
+        for f in bse_files:
+            email.attach(f.name, f.read(), f.content_type)
         email.send()
 
         return redirect("success")
+
 
     return render(request, "FormaApp/test.html", {
         "ime": ime,

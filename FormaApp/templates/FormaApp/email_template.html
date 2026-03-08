@@ -15,7 +15,7 @@
 </head>
 <body>
 
-<h1>Prijava za registraciju dodatka prehrani: {{ naziv_proizvoda|default:"-" }}</h1>
+<h1>Prijava za registraciju dodatka prehrani: {{ naziv|default:"-" }}</h1>
 <p>Simulacija postupka prijave – nastava iz farmakognozije</p>
 
 <!-- Podaci studenta -->
@@ -54,7 +54,7 @@
 
 <!-- 3. Namena i način primjene -->
 <div class="section">
-    <h2>3. Namena i način primjene</h2>
+    <h2>3. Namjena i način primjene</h2>
     <p><strong>Zdravstvena izjava:</strong> {{ namena_i_primjena.namena|default:"-" }}</p>
     <p><strong>Preporučena dnevna doza:</strong> {{ namena_i_primjena.doza|default:"-" }} {{ namena_i_primjena.jedinica_doza|default:"" }}</p>
     <p><strong>Način primjene:</strong> {{ namena_i_primjena.nacin_uzimanja|default:"-" }}</p>
@@ -69,7 +69,7 @@
     <table>
         <tr>
             <th>Naziv</th>
-            <th>Količina doza</th>
+            <th>Dnevna doza</th>
             <th>% NRV</th>
             <th>Na 100g</th>
         </tr>
@@ -116,20 +116,20 @@
     <h2>6. Biljna droga</h2>
     {% if biljne_droge %}
     <ul>
-    {% for b in biljne_droge %}
+        {% for b in biljne_droge %}
         <li>
-        <strong>{{ b.biljka_sr }}</strong>{% if b.biljka_lat %} ({{ b.biljka_lat }}){% endif %}<br>
-        Dio biljke: {{ b.dio_biljke|default:"-" }}<br>
-        Priprema: {{ b.stanje|default:"-" }}<br>
-        Tip ekstrakta / rastvarač: {{ b.rastvarac|default:"-" }}<br>
-        {% if b.der %}DER: {{ b.der }}<br>{% endif %}
-        {% if b.standard_proc %}Standardizacija: {{ b.standard_proc }} % {{ b.standard_sup }}<br>{% endif %}
-        Porijeklo: {{ b.zemlja|default:"-" }}<br>
-        Količina: {{ b.kolicina }} {{ b.jedinica }}<br>
-        {% if b.poruka %}Napomena: {{ b.poruka }}{% endif %}
+            <strong>{{ b.biljka_sr }}</strong>{% if b.biljka_lat %} ({{ b.biljka_lat }}){% endif %}<br>
+            Dio biljke: {{ b.dio_biljke|default:"-" }}<br>
+            Priprema: {{ b.stanje|default:"-" }}<br>
+            Tip ekstrakta / rastvarač: {{ b.rastvarac|default:"-" }}<br>
+            {% if b.der %}DER: {{ b.der }}<br>{% endif %}
+            {% if b.standard_proc %}Standardizacija: {{ b.standard_proc }} % {{ b.standard_sup }}<br>{% endif %}
+            Porijeklo: {{ b.zemlja|default:"-" }}<br>
+            Količina: {{ b.kolicina }} {{ b.jedinica }}<br>
+            {% if b.poruka %}Napomena: {{ b.poruka }}{% endif %}
         </li>
         <br>
-    {% endfor %}
+        {% endfor %}
     </ul>
     {% else %}
     <p>Nema unesenih biljnih droga.</p>
@@ -144,9 +144,7 @@
         {% for a in aktivne_supstance %} 
         <li style="margin-bottom:10px; border-bottom:1px solid #ccc; padding-bottom:5px;">
             <p><strong>Naziv:</strong> {{ a.naziv }}</p>
-            {% if a.hemijski_oblik %}
-            <p><strong>Hemijski oblik:</strong> {{ a.hemijski_oblik }}</p>
-            {% endif %}
+            {% if a.hemijski_oblik %}<p><strong>Hemijski oblik:</strong> {{ a.hemijski_oblik }}</p>{% endif %}
             <p><strong>Količina:</strong> {{ a.kolicina }} {{ a.jedinica }}</p>
         </li> 
         {% endfor %} 
@@ -177,7 +175,7 @@
         {% endfor %}
     </table>
     {% else %}
-    <p>{{ komentar_nutritivna|default:"Nema unesenih nutritivnih vrijednosti." }}</p>
+    <p>{{ nutrient_comment|default:"Nema unesenih nutritivnih vrijednosti." }}</p>
     {% endif %}
 </div>
 
@@ -186,6 +184,9 @@
     <h2>9. Sertifikati BSE/TSE i GMO</h2>
     <p>Status: {{ bse_tse.status|default:"Nije potrebno" }}</p>
     {% if bse_tse.napomena %}<p>Napomena: {{ bse_tse.napomena }}</p>{% endif %}
+    {% if bse_file_names %}
+    <p>Priloženi fajlovi: {{ bse_file_names|join:", " }}</p>
+    {% endif %}
 </div>
 
 <!-- 10. Klinička istraživanja i naučni dokazi -->
@@ -195,10 +196,10 @@
     <ul>
         {% for s in klinicke_studije %}
         <li>
-        <strong>{{ s.naziv }}</strong><br>
-        Tip studije: {{ s.tip|default:"-" }}<br>
-        Godina / referenca: {{ s.godina|default:"-" }}<br>
-        {% if s.doi %}DOI: {{ s.doi }}{% endif %}
+            <strong>{{ s.naziv }}</strong><br>
+            Tip studije: {{ s.tip|default:"-" }}<br>
+            Godina / referenca: {{ s.godina|default:"-" }}<br>
+            {% if s.doi %}DOI: {{ s.doi }}{% endif %}
         </li>
         {% endfor %}
     </ul>
