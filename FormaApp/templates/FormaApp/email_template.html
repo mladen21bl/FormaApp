@@ -85,6 +85,11 @@
     {% else %}
     <p>Nema unesenih aktivnih sastojaka.</p>
     {% endif %}
+
+    {% if all_ingredients %}
+    <p><strong>Svi sastojci proizvoda:</strong></p>
+    <p>{{ all_ingredients|linebreaksbr }}</p>
+    {% endif %}
 </div>
 
 <!-- 5. Ograničenja i upozorenja -->
